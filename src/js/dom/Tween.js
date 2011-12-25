@@ -5,6 +5,8 @@
  * @2011-01-11 by mytharcher
  * 
  * update:
+ * @2011-10-31 by mytharcher
+ * 		[a] Add own constructor.
  */
 
 ///import js.util.Class;
@@ -18,10 +20,13 @@
  * @extends js.transition.Timeline
  */
 js.dom.Tween = js.util.Class.create({
+	consturctor: function () {
+		js.transition.Timeline.apply(this, arguments);
+	},
 	getOptions: function (option) {
-		var opt = js.dom.Tween.prototype.superClass.prototype.getOptions(option);
+		var opt = js.transition.Timeline.prototype.getOptions(option);
 		
-		return js.util.Class.extend(opt, {
+		return js.util.Class.mix(opt, {
 			
 		});
 	}
@@ -68,9 +73,9 @@ js.util.Class.copy({
 	 * @return {Object}
 	 */
 	prepare: function (option) {
-		var Tween = this,
+		var Tween = js.dom.Tween,
 			Style = js.dom.Style,
-			option = Tween.prototype.superClass.prepare(option);
+			option = js.transition.Timeline.prepare(option);
 		
 		//预处理属性列表
 		for (var prop in option.property) {
@@ -129,7 +134,7 @@ js.util.Class.copy({
 	}
 }, js.dom.Tween);
 
-js.util.Class.copy({
+js.dom.Tween.config = js.util.Class.mix({
 	duration: 500,
 	ease: js.transition.Easing.linear
-}, js.dom.Tween.config);
+}, js.transition.Timeline.config);

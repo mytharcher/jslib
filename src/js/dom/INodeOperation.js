@@ -23,11 +23,11 @@
 /**
  * @class js.dom.Node
  */
-js.dom.INodeOperation = js.dom.INodeOperation || js.util.Class.extend({
+js.dom.INodeOperation = js.dom.INodeOperation || js.util.Class.mix({
 	/**
 	 * 插入一个节点
 	 * @param {Element/String/Array/Node} node 要插入的元素或集合
-	 * @param {Element/Number/String/Array/Node} (optional)position 要插入的相对位置，如传入Number类型，则表示插入的索引位置
+	 * @param {Element/Number/String/Array/Node} position (optional)要插入的相对位置，如传入Number类型，则表示插入的索引位置
 	 * @return {Node} 返回自身以供链式调用
 	 */
 	insert: function(node, position){
@@ -62,7 +62,7 @@ js.dom.INodeOperation = js.dom.INodeOperation || js.util.Class.extend({
 	/**
 	 * 在某个元素后插入一个元素
 	 * @param {Element/String/Array/Node} node 要插入的元素或集合
-	 * @param {Element/Number/String/Array/Node} (optional)position 要插入的相对位置，如传入Number类型，则表示插入的索引位置
+	 * @param {Element/Number/String/Array/Node} position (optional)要插入的相对位置，如传入Number类型，则表示插入的索引位置
 	 * @return {Node} 返回自身以供链式调用
 	 */
 	after: function (node, position) {
@@ -89,7 +89,7 @@ js.dom.INodeOperation = js.dom.INodeOperation || js.util.Class.extend({
 	/**
 	 * 将当前集合插入到一个元素中，可以指定插入的位置
 	 * @param {Object} node
-	 * @param {Element/Number/String/Array/Node} (optional)position 要插入的相对位置，如传入Number类型，则表示插入的索引位置
+	 * @param {Element/Number/String/Array/Node} position (optional)要插入的相对位置，如传入Number类型，则表示插入的索引位置
 	 */
 	insertTo: function (node, position) {
 		return (new this.constructor(node)).insert(this, position);
@@ -118,6 +118,20 @@ js.dom.INodeOperation = js.dom.INodeOperation || js.util.Class.extend({
 }));
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeOperation);
+
+/**
+ * 创建一个Node节点
+ * @method js.dom.Node.create
+ * @static
+ * 
+ * @param {String} tag
+ * @param {Object} attrs
+ * 
+ * @return {js.dom.Node}
+ */
+js.dom.Node.create = function (tag, attrs) {
+	return new this(js.dom.Operation.create(tag, attrs));
+};
 
 ///import js.util.Type;
 ///import js.util.Type.~Element;

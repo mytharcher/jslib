@@ -9,7 +9,7 @@
 
 ///import js.util;
 ///import js.util.Class;
-///import js.util.Global;
+///import js.util.Global.stamp;
 
 /**
  * @class js.util.Set

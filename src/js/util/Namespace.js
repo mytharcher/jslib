@@ -12,11 +12,13 @@
  * @2011-05-06 by mytharcher:
  * 		[f] Fix the method name "use" to "using";
  * 		[r] Remove using self to js;
- * 
+ * @2011-08-13 by mytharcher:
+ * 		[m] Rename the method "using" to "use";
+ * 		[m] Change window to js.util.Global.getGlobal();
  */
 
 ///import js.util;
-///import js.util.Global;
+///import js.util.Global.getGlobal;
 
 /**
  * @class js.util.Namespace
@@ -79,7 +81,7 @@ js.util.Namespace = js.util.Namespace || {
 	
 	/**
 	 * 声明包结构中的类的快捷方式
-	 * @method js.util.Namespace.using
+	 * @method js.util.Namespace.use
 	 * @static
 	 * 
 	 * 已存在去重判断
@@ -92,8 +94,8 @@ js.util.Namespace = js.util.Namespace || {
 	 * 
 	 * @return {void}
 	 */
-	using: function (ns, target, alias) {
-		var target = target || window;
+	use: function (ns, target, alias) {
+		var target = target || js.util.Global.getGlobal();
 		var className = ns.match(/(?:^|\.)([\w\$]+|\*)$/)[1];
 		var Namespace = js.util.Namespace;
 		
@@ -102,7 +104,7 @@ js.util.Namespace = js.util.Namespace || {
 			var baseNs = Namespace.get(baseName);
 			for (var i in baseNs) {
 				if (i != 'prototype') {
-					Namespace.using(baseName + '.' + i, target);
+					Namespace.use(baseName + '.' + i, target);
 				}
 			}
 		} else {

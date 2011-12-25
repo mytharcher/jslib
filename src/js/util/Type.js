@@ -85,7 +85,7 @@
  * 
  * @return {Boolean}
  */
-js.util.Type = js.util.Type || js.util.Class.extend((function (types) {
+js.util.Type = js.util.Type || js.util.Class.mix((function (types) {
 	function create(t, o2s) {
 		return function (value) {
 			return o2s.call(value) == '[object ' + t + ']';

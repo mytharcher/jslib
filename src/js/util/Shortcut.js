@@ -20,7 +20,6 @@
  * 			Add a limit that only empty arguments(with zero length) would be dispatched to the mirror, so that the undefined value could be according to;
  */
 
-///import js.client.Features.~dateNow;
 ///import js.util;
 
 /**
@@ -34,7 +33,7 @@ js.util.Shortcut = {
 	 * @property STAMP 唯一标识键
 	 * @type {String}
 	 */
-	STAMP: 'ELF_SHORTCUT_' + Date.now(),
+	STAMP: 'ELF_SHORTCUT_' + (+new Date).toString(36),
 	
 	/**
 	 * @private
@@ -64,7 +63,10 @@ js.util.Shortcut = {
 	 */
 	create: function (interceptors, index) {
 		return this.attach(function () {
-			return js.util.Shortcut.dispatch(arguments, index);
+			var args = arguments;
+			return args.length ?
+				js.util.Shortcut.dispatch(args, index)
+				: js.util.Shortcut.get(args.callee).mirror;
 		}, interceptors);
 	},
 	
@@ -87,10 +89,10 @@ js.util.Shortcut = {
 	 * @method js.util.Shortcut.dispatch
 	 * @static
 	 * 
-	 * @param {Arguments} args
-	 * @param {Number} index
+	 * @param {Arguments} args 分发调用的参数对象
+	 * @param {Number} index 使用参数的第几项作为分发的判断依据
 	 * 
-	 * @return {Any}
+	 * @return {Any} 返回值由添加的分发器定义
 	 */
 	dispatch: function (args, index) {
 		var dispatcher = this.get(args.callee);
@@ -120,7 +122,7 @@ js.util.Shortcut = {
 	 * @param {Function} filter 过滤函数，遍历args，返回false的时候不会被申明为快捷方式。
 	 */
 	use: function (object, args, filter) {
-		js.util.Class.extend(this.get(object).mirror, args, filter);
+		js.util.Class.mix(this.get(object).mirror, args, filter);
 	},
 	
 	/**

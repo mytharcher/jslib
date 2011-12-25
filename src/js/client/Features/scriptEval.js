@@ -7,7 +7,7 @@
  * update:
  */
 
-///import js.util.Global;
+///import js.util.Global.guid;
 ///import js.client.Features;
 
 /**

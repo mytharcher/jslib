@@ -5,6 +5,8 @@
  * @2010-12-13 by mytharcher
  * 
  * update:
+ * @2011-08-13 by mytharcher
+ * 		[m] add more escaped attributes' name
  */
 
 ///import js.dom;
@@ -27,7 +29,11 @@ js.dom.Attribute = js.dom.Attribute || {
 	 * @return {String} 返回属性值
 	 */
 	get: function (element, key) {
-		return element.getAttribute(this.keyEscape[key] || key);
+		var element = js.dom.Stage.get(element);
+	    if ('style' == key){
+	        return element.style.cssText;
+	    }
+		return element.getAttribute(js.dom.Attribute.keyEscape[key] || key);
 	},
 	
 	/**
@@ -43,18 +49,38 @@ js.dom.Attribute = js.dom.Attribute || {
 		var element = js.dom.Stage.get(element);
 		if (typeof key == 'object' && typeof value == 'undefined') {
 			for (var i in key) {
-				this.set(element, i, key[i]);
+				js.dom.Attribute.set(element, i, key[i]);
 			}
 		} else {
-			element.setAttribute(element, this.keyEscape[key] || key, value);
+			element.setAttribute(js.dom.Attribute.keyEscape[key] || key, value);
 		}
 	},
 	
 	/**
 	 * @ignore
 	 * @private
+	 * 
+	 * from https://github.com/BaiduFE/Tangram-base/blob/master/src/baidu/dom/_NAME_ATTRS.js
 	 */
-	keyEscape: {
-		'class': 'className'
-	}
+	keyEscape: (function () {
+	    var result = {
+	        'cellpadding': 'cellPadding',
+	        'cellspacing': 'cellSpacing',
+	        'colspan': 'colSpan',
+	        'rowspan': 'rowSpan',
+	        'valign': 'vAlign',
+	        'usemap': 'useMap',
+	        'frameborder': 'frameBorder'
+	    };
+	    
+	    if (js.client.Browser.IE < 8) {
+	        result['for'] = 'htmlFor';
+	        result['class'] = 'className';
+	    } else {
+	        result['htmlFor'] = 'for';
+	        result['className'] = 'class';
+	    }
+	    
+	    return result;
+	})()
 };

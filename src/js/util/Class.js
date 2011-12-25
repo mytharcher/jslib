@@ -11,6 +11,21 @@
  * @2010-12-23 by mytharcher [m] Modify method "extend", "clone" and "copy" will all implement by "extend".
  * @2011-01-10 by mytharcher [m] Fix bug in method "extend", especially for extend an object contains a constructor key.
  * @2011-06-29 by mytharcher [m] Fix bug in method "create" and "inherit", for supporting the syntax of "subClassInstance instanceof SuperClass == true".
+ * @2011-08-13 by mytharcher
+ * 		[m] Change the method "extend" to "mix" to avoid confusion about extend actions.
+ * @2011-08-18 by mytharcher
+ * 		[m] Move the implement process from method "inherit" to "create" for clean.
+ * @2011-08-24 by mytharcher
+ * 		[m] Change class inheritship property "superClass" in newly created classes to "Super".
+ * 		[d] Remove prototype property "_super" from newly created classes.
+ * 		[m] Modify "implement" API to support more arguments.
+ * @2011-09-02 by mytharcher
+ * 		[m] Add array support for method "mix" to specify the argument "override".
+ * @2011-09-25 by mytharcher
+ * 		[m] Change method "mix" to allow copy empty properties.
+ * @2011-10-30 by mytharcher
+ * 		[m] Abandon the auto-created constructor in newly created class without specifying a own constructor, for being more common as other languages.
+ * 		[m] Remove "Super" in newly created sub-class to avoid confusion.
  */
 
 ///import js.util;
@@ -33,7 +48,7 @@ js.util.Class = js.util.Class || {
 	 * @return {Object}
 	 */
 	clone: function (source, target) {
-		return js.util.Class.extend(target, source, true, true);
+		return js.util.Class.mix(target, source, true, true);
 	},
 	
 	/**
@@ -41,32 +56,59 @@ js.util.Class = js.util.Class || {
 	 * @method js.util.Class.copy
 	 * @static
 	 * 
-	 * @param {Object} source 复制源
-	 * @param {Object} target 复制目标
-	 * @param {Boolean} deep 是否深度复制
+	 * @param {Object...} source 复制源
+	 * @param {Object} target (optional)复制目标
+	 * @param {Boolean} deep (optional)是否深度复制
 	 * 
 	 * @return {Object}
 	 */
-	copy: function (source, target, deep) {
-		return js.util.Class.extend(target, source, true, deep);
+	copy: function (source) {
+		var len = arguments.length,
+			lastIndex = len - 1,
+			deep = arguments[lastIndex],
+			hasDeep = js.util.Type.isBoolean(deep),
+			target;
+		
+		if (lastIndex > 0) {
+			if (hasDeep) {
+				if (lastIndex > 1) {
+					target = arguments[--lastIndex];
+				}
+			} else {
+				target = deep;
+				deep = false;
+				lastIndex--;
+			}
+		} else {
+			deep = false;
+		}
+		for (var i = 0; i <= lastIndex; i++) {
+			target = js.util.Class.mix(target, arguments[i], true, deep);
+		}
+		return target;
+		// return js.util.Class.mix(target, source, true, deep);
 	},
 	
 	/**
 	 * 以一个对象上有的属性扩展另一个对象，默认不覆盖已有的同名属性
-	 * @method js.util.Class.extend
+	 * @method js.util.Class.mix
 	 * @static
 	 * 
 	 * @param {Object} target 被扩展的对象
 	 * @param {Object} source 源对象
-	 * @param {Boolean/Function} override (optional)是否覆盖已存在的属性。该参数或函数返回的值在如下三种情况下，undefined：如果已存在则不覆盖；true：强制覆盖；false：忽略该属性。默认：undefined。
+	 * @param {Boolean/Function/Array} override (optional)是否覆盖已存在的属性。该参数或函数返回的值在如下三种情况下，undefined：如果已存在则不覆盖；true：强制覆盖；false：忽略该属性。默认：undefined。
 	 * @param {Boolean} deep 是否深度扩展，默认：false；
 	 * 
 	 * @return {Object}
 	 */
-	extend: (function (specialKeys) {
+	mix: (function (specialKeys) {
 		function ifOverride (target, source, key, override) {
-			var over = typeof override == 'function' ? override.call(source, key) : override;
-			return (typeof over == 'undefined' ? !target.hasOwnProperty(key) : over) && source.hasOwnProperty(key);
+			var over = typeof override == 'function' ?
+				override.call(source, key)
+				: (override instanceof Array ?
+					override.indexOf(key) >= 0
+					: override);
+			return source.hasOwnProperty(key) && (typeof over == 'undefined' ? !target.hasOwnProperty(key) : over);
 		}
 		
 		return function (target, source, override, deep) {
@@ -86,9 +128,9 @@ js.util.Class = js.util.Class || {
 				keys = keys.concat(specialKeys);
 				for (i = 0, len = keys.length; i < len; i++) {
 					key = keys[i];
-					if (key && key != 'prototype' && ifOverride(target, source, key, override)) {
+					if (key != 'prototype' && ifOverride(target, source, key, override)) {
 						item = source[key];
-						target[key] = deep ? Class.extend(target[key], item, true, true) : item;
+						target[key] = deep ? Class.mix(target[key], item, true, true) : item;
 						if (!isArray && item === null) {
 							delete target[key];
 						}
@@ -107,37 +149,44 @@ js.util.Class = js.util.Class || {
 	 * @static
 	 * 
 	 * @param {Object} proto 新类的原型
-	 * @param {Function} superClass 超类，非必选。如有超类，则新类会继承于超类
+	 * @param {Function} Super 超类，非必选。如有超类，则新类会继承于超类
 	 * @param {Array} interfaces 接口，非必选。如果有接口，则新类会继承接口列表中的所有原型，但不会被覆盖
 	 * 
 	 * @return {Function} 创建的新类
 	 */
-	create: function (proto, superClass, interfaces) {
+	create: function (proto, Super, interfaces) {
 		var Class = js.util.Class,
-			newClass;
+			newClass = proto.hasOwnProperty('constructor') ? proto.constructor : new Function;
+			// Super = Super || Object;
 		
-		if (proto.hasOwnProperty('constructor')) {
-			newClass = proto.constructor;
-		} else {
-			var tplStr = '';
-			//解决了派生类不指定constructor是默认继承超类构造函数不能超过两级的问题
-			if (superClass) {
-				var defConRe = /^function anonymous\(\)\s*\{\s*this\.superClass(\.prototype\.superClass)*\.apply\(this,\s*arguments\);\s*\}$/;
-				tplStr += 'this.superClass';
-				for (var s = superClass; s; s = s.prototype.superClass) {
-					if (defConRe.test(s.toString())) {
-						tplStr += '.prototype.superClass';
-					} else {
-						break;
-					}
-				}
-				tplStr += '.apply(this, arguments);';
-			}
-			newClass = new Function(tplStr);
-		}
+		// if (proto.hasOwnProperty('constructor')) {
+			// newClass = proto.constructor;
+		// } else {
+			// var tplStr = '';
+			// //解决了派生类不指定constructor是默认继承超类构造函数不能超过两级的问题
+			// if (Super) {
+				// var defConRe = /^function anonymous\(\)\s*\{\s*this\.Super(\.prototype\.Super)*\.apply\(this,\s*arguments\);\s*\}$/;
+				// tplStr += 'this.Super';
+				// for (var s = Super; s; s = s.prototype.Super) {
+					// if (defConRe.test(s.toString())) {
+						// tplStr += '.prototype.Super';
+					// } else {
+						// break;
+					// }
+				// }
+				// tplStr += '.apply(this, arguments);';
+			// }
+			// newClass = new Function(tplStr);
+		// }
 		Class.copy(proto, newClass.prototype);
 		
-		return superClass ? Class.inherit(newClass, superClass, interfaces) : newClass;
+		//如果声明了父类，则从父类继承
+		Super && Class.inherit(newClass, Super);
+		
+		//实现接口
+		interfaces && Class.implement(newClass, [].slice.call(arguments, 2));
+		
+		return newClass;
 	},
 	
 	/**
@@ -147,15 +196,14 @@ js.util.Class = js.util.Class || {
 	 * 
 	 * 该继承会使用SubClass.prototype = new SuperClass()的机制继承超类，
 	 * 同时会修正constructor属性，
-	 * 还会添加一个superClass的属性指向超类。
 	 * 另外，还会继承超类上所有的静态对象。
 	 * 
 	 * @param {Function} someClass 派生类
-	 * @param {Function} superClass 超类
+	 * @param {Function} Super 超类
 	 * 
 	 * @return {Function} 派生类
 	 */
-	inherit: function (someClass, superClass, interfaces) {
+	inherit: function (someClass, Super) {
 		var Class = js.util.Class,
 		
 			//暂存派生类原有的prototype
@@ -165,7 +213,7 @@ js.util.Class = js.util.Class || {
 			superHelper = new Function();
 		
 		//复制超类的prototype到临时辅助类
-		superHelper.prototype = superClass.prototype;
+		superHelper.prototype = Super.prototype;
 		
 		//设置派生类的prototype为临时辅助类生成的实例
 		//这里相当于给派生类一套超类干净的prototype赋值
@@ -174,15 +222,11 @@ js.util.Class = js.util.Class || {
 		//覆盖自定义原型
 		Class.copy(proto, someClass.prototype);
 		
-		//实现接口
-		Class.implement(someClass, interfaces);
-		
 		//复制超类的静态对象到派生类
-		Class.extend(someClass, superClass);
+		Class.mix(someClass, Super);
 		
 		//设置派生类的超类属性为超类
-		someClass.prototype.superClass = superClass;
-		someClass.prototype._super = superClass.prototype;
+		// someClass.prototype.Super = Super;
 		
 		//修复派生类的构造函数属性
 		someClass.prototype.constructor = someClass;
@@ -194,7 +238,8 @@ js.util.Class = js.util.Class || {
 	 * 实现接口
 	 * @method js.util.Class.implement
 	 * @static
-	 * 该方法会将inter对象上的所有函数扩展到someClass的原型上，前提是someClass的原型上没有同名的方法。通过此方法以达到在创建类时可以实现其他类提供的接口。
+	 * 该方法会将inter对象上的所有函数扩展到someClass的原型上，前提是someClass的原型上没有同名的方法。
+	 * 通过此方法以达到在创建类时可以实现其他类提供的接口。
 	 * 
 	 * @param {Function} someClass
 	 * @param {Array|Object...} inter
@@ -208,13 +253,15 @@ js.util.Class = js.util.Class || {
 			for (var i = 0, l = interfaces.length; i < l; i++) {
 				var interProto = interfaces[i];
 				for (var p in interProto) {
-					var protoItem = interProto[p];
-					if (p != 'constructor'
-						&& p != 'prototype'
-						&& obj2str.call(protoItem) == '[object Function]'
-						&& !someClass.prototype[p]
-					) {
-						someClass.prototype[p] = protoItem;
+					if (interProto.hasOwnProperty(p)) {
+						var protoItem = interProto[p];
+						if (p != 'constructor'
+							&& p != 'prototype'
+							&& obj2str.call(protoItem) == '[object Function]'
+							&& !someClass.prototype[p]
+						) {
+							someClass.prototype[p] = protoItem;
+						}
 					}
 				}
 			}

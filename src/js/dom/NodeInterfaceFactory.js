@@ -19,7 +19,7 @@
  * @extends js.util.InterfaceFactory
  * @singleton
  */
-js.dom.NodeInterfaceFactory = js.dom.NodeInterfaceFactory || js.util.Class.extend({
+js.dom.NodeInterfaceFactory = js.dom.NodeInterfaceFactory || js.util.Class.mix({
 	/**
 	 * 创建接口类
 	 * @method js.dom.NodeInterfaceFactory.create

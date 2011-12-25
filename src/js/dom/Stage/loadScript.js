@@ -32,7 +32,7 @@ js.dom.Stage.loadScript = function (url, option) {
 	
 	script[js.client.Browser.IE ? 'onreadystatechange' : 'onload'] = function (ev) {
 		if (js.client.Browser.IE && this.readyState == 'loaded' || !js.client.Browser.IE) {
-			option.onLoad && option.onLoad();
+			option.onLoad && option.onLoad(this);
 			this.onreadystatechange = this.onload = null;
 		}
 	}

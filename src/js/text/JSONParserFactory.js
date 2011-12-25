@@ -7,6 +7,8 @@
  * update:
  * @2010-12-27 by mytharcher:
  * 		[m] Reversed the meaning of trim parameter.
+ * @2011-09-27 by mytharcher:
+ * 		[m] Fix bug in method "createParser" for opposite order of parsing string.
  * 
  */
 
@@ -35,7 +37,7 @@ js.text.JSONParserFactory = js.text.JSONParserFactory || {
 		return function (source) {
 			var ret = {};
 			var sArr = source.split(sepChar);
-			for (var i = sArr.length - 1; i >= 0; i--) {
+			for (var i = 0, len = sArr.length; i < len; i++) {
 				var pairStr = sArr[i];
 				if (trim ? pairStr.trim() : pairStr) {
 					var pair = pairStr.split(letChar);

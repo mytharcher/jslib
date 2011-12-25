@@ -5,8 +5,11 @@
  * @2011-04-12 by mytharcher
  * 
  * update:
+ * @2011-09-22 by mytharcher
+ * 		[m] Change API, and will not support absolute order queue any more.
  */
 
+///import js.util.Processor;
 ///import js.client.Browser;
 ///import js.dom.Stage;
 
@@ -19,9 +22,7 @@
  * @method js.dom.Stage.ready
  * @static
  * 
- * @description 顺带实现了同步执行的函数队列
- * 
- * for use: <pre><code>js.dom.Stage.ready(fn1, fn2)(fn3, fn4)(fn5, fn6)</code></pre> ...
+ * for use: <pre><code>js.dom.Stage.ready(f1)(f2, scope)(f3, scope, args)</code></pre> ...
  * 
  * @param {Function...} callback 可传入多个要执行的操作函数
  * 
@@ -36,21 +37,9 @@ js.dom.Stage.ready = (function(){
 	}
 	
 	function start () {
-		if (!running) {
-			if (queue.length) {
-				running = true;
-				setTimeout(run, 0);
-			}
+		while (queue.length) {
+			js.util.Processor.queue.apply(null, queue.shift());
 		}
-	}
-	
-	function run () {
-		var fn = queue.shift();
-		while (fn.length) {
-			fn.shift()();
-		}
-		running = false;
-		start();
 	}
 	
 	function bindReady(){

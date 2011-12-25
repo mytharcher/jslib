@@ -9,10 +9,12 @@
  * @2010-04-27 by mytharcher
  * @2010-07-10 by mytharcher
  * @2010-11-18 by mytharcher
+ * @2011-08-24 by mytharcher
+ * 		[a] Add "Event.Type" for change hard code to enum expression.
  */
 
 ///import js.dom;
-///import js.util.Global;
+///import js.util.Global.stamp;
 
 /**
  * @class js.dom.Event
@@ -249,6 +251,26 @@ js.dom.Event = js.dom.Event || {
 				}
 			}
 		}
+	},
+	
+	Type: {
+		CLICK: 'click',
+		MOUSE_OVER: 'mouseover',
+		MOUSE_OUT: 'mouseout',
+		MOUSE_DOWN: 'mousedown',
+		MOUSE_UP: 'mouseup',
+		MOUSE_WHEEL: 'mousewheel',
+		
+		KEY_DOWN: 'keydown',
+		KEY_PRESS: 'keypress',
+		KEY_UP: 'keyup',
+		
+		LOAD: 'load',
+		BEFORE_UNLOAD: 'beforeunload',
+		UNLOAD: 'unload',
+		
+		FOCUS: 'focus',
+		BLUR: 'blur'
 	}
 };
 

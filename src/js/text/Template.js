@@ -101,6 +101,8 @@ js.text.Template = js.text.Template || {
 			return tpl.apply(null, args);
 		}
 		return js.text.Template.cache(tpl).apply(null, args);
+		
+		// return (typeof tpl == 'function' ? tpl : js.text.Template.cache(tpl)).apply(null, args);
 	},
 	
 	/**

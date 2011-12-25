@@ -47,7 +47,7 @@ js.text.WordString = js.text.WordString || js.util.Class.create({
 			values = Type.isArray(value) ? value : Type.isString(value) ? value.split(this.seperator) : [];
 		values.filter(function (v) {
 			return v != '';
-		}).forEach(js.text.WordString.prototype.superClass.prototype.addValue, this);
+		}).forEach(js.util.Set.prototype.addValue, this);
 	},
 	
 	/**
@@ -56,7 +56,7 @@ js.text.WordString = js.text.WordString || js.util.Class.create({
 	 */
 	removeValue: function (value) {
 		var values = value instanceof Array ? value : value.split(this.seperator);
-		values.forEach(js.text.WordString.prototype.superClass.prototype.removeValue, this);
+		values.forEach(js.util.Set.prototype.removeValue, this);
 	},
 	
 	/**
@@ -69,7 +69,7 @@ js.text.WordString = js.text.WordString || js.util.Class.create({
 	 */
 	contains: function (value) {
 		var values = value instanceof Array ? value : value.split(this.seperator);
-		return values.every(js.text.WordString.prototype.superClass.prototype.contains, this);
+		return values.every(js.util.Set.prototype.contains, this);
 	},
 	
 	/**

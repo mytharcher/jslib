@@ -161,6 +161,8 @@ js.util.Class.copy({
 	/**
 	 * @ignore
 	 * 更新方法映射表
+	 * 
+	 * fuck! 这么长时间我都忘记为啥要写这么复杂的逻辑了。。。
 	 */
 	_updataMethod: {
 		'add': {

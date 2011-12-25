@@ -15,7 +15,7 @@
 
 /**
  * 在全局作用域执行js代码
- * @method js.util.Global.evalScript
+ * @method js.dom.Stage.evalScript
  * @static
  * 
  * from jQuery-1.4.4 globalEval

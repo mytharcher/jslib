@@ -6,6 +6,8 @@
  * 
  * update:
  * @2010-11-17 by mytharcher
+ * @2011-09-12 by mytharcher
+ * 		[a] Add method "get" for getting new Node object form set with specified index.
  */
 
 ///import js.util.Class;
@@ -39,7 +41,13 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 				queryResult = js.dom.Selector.queryAll(selector, context);
 				break;
 			
+			// case Type.HTMLCOLLECTION:
+			// case Type.NODELIST:
+				// queryResult = js.util.XArray.toArray(selector);
+				// break;
+				
 			case Type.ARRAY:
+			case Type.XARRAY:
 				queryResult = selector.slice();
 				break;
 			
@@ -50,11 +58,22 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 			case Type.DOCUMENT:
 			case Type.WINDOW:
 			default:
-				queryResult = [selector];
+				queryResult = js.util.XArray.toArray(selector);
 				break;
 		}
 		
 		return this.merge(queryResult);
+	},
+	
+	/**
+	 * 返回集合中索引为index的新对象
+	 * 
+	 * @param {Number} index 要获取的索引
+	 * 
+	 * @return {js.dom.Node} 返回包装后的新对象
+	 */
+	get: function (index) {
+		return new this.constructor(this[index]);
 	},
 	
 	/**
@@ -118,7 +137,9 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 	 * @param {Array|Node} arrayLike
 	 */
 	merge: function (arrayLike) {
-		[].push.apply(this, js.util.XArray.toArray(arrayLike));
+		var arr = js.util.XArray.toArray(arrayLike);
+		[].push.apply(this, arr);
+		this.length += arr.length;
 		return this;
 	},
 	
@@ -147,6 +168,7 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 ///import js.util.Type.~Element;
 ///import js.util.Type.~Document;
 ///import js.util.Type.~Window;
+///import js.util.Type.~XArray;
 ///import js.util.XArray;
 ///import js.dom.Selector;
 ///import js.client.Features.~arrayForEach;

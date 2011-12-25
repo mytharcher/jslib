@@ -12,15 +12,37 @@
 ///import js.dom;
 
 /**
- * @class js.dom.DragMove
+ * @class js.dom.Drag
  * 拖动元素的实现
  * @singleton
  */
-js.dom.DragMove = {
+js.dom.Drag = {
 	/**
 	 * @ignore
 	 */
 	dragging: {},
+	
+	/**
+	 * 使一个元素可以被拖动
+	 * @method js.dom.Drag.attach
+	 * @static
+	 * 
+	 * @param {Element} element 要拖动的元素
+	 * @param {Object} option 拖动选项
+	 */
+	attach: function (element, option) {
+		var elem = js.dom.Stage.get(element),
+			id = js.dom.Stage.mark(elem);
+		js.dom.Event.add(option.handlerId || elem, 'mousedown', function (ev) {
+			js.dom.Drag.start(id, option);
+			js.dom.Event.add(document, 'mouseup', function (ev) {
+				js.dom.Drag.stop(id);
+				js.dom.Event.remove(document, 'mouseup', arguments.callee);
+			});
+			ev.preventDefault();
+		});
+		elem = null;
+	},
 	
 	/**
 	 * @private
@@ -31,7 +53,7 @@ js.dom.DragMove = {
 			var elem = js.dom.Stage.get(option.id),
 				x = ev.clientX,
 				y = ev.clientY,
-				DragMove = js.dom.DragMove;
+				Drag = js.dom.Drag;
 			
 			if (typeof option.originalPosition == 'undefined') {
 				option.originalPosition = elem.style.position || '';
@@ -44,7 +66,7 @@ js.dom.DragMove = {
 				option.offsetY = (option.startY = this.startY) - pos.y;
 			}
 			
-			var cur = option.restrict ? DragMove.restrict(x - option.offsetX, y - option.offsetY, option.restrict)
+			var cur = option.restrict ? Drag.restrict(x - option.offsetX, y - option.offsetY, option.restrict)
 				: {x: x - option.offsetX, y: y - option.offsetY};
 			elem.style.left = cur.x + 'px';
 			elem.style.top = cur.y + 'px';
@@ -81,31 +103,36 @@ js.dom.DragMove = {
 	
 	/**
 	 * 开始拖动元素
-	 * @method js.dom.DragMove.start
+	 * @method js.dom.Drag.start
 	 * 
 	 * @param {Element} element
 	 * @param {Object} option
 	 */
 	start: function (element, option) {
-		var option = option || {};
+		var option = option || {},
+			elem = js.dom.Stage.get(element);
 		
-		option.id = js.dom.Stage.mark(element);
+		option.id = js.dom.Stage.mark(elem);
 		option.trackerId = js.dom.MouseTracker.start(this.mover(option));
 		this.dragging[option.id] = option;
 	},
 	
 	/**
 	 * 停止拖动元素
-	 * @method js.dom.DragMove.stop
+	 * @method js.dom.Drag.stop
 	 * 
 	 * @param {Element} element
 	 */
 	stop: function (element) {
-		var id = js.dom.Stage.mark(element),
+		var elem = js.dom.Stage.get(element),
+			id = js.dom.Stage.mark(elem),
 			option = this.dragging[id];
 		if (option) {
 			js.dom.MouseTracker.stop(option.trackerId);
-//			element.style.position = option.originalPosition;
+			if (option.resetPosition) {
+				element.style.position = option.originalPosition;
+			}
+			delete option.originalPosition;
 			delete this.dragging[id];
 		}
 	}

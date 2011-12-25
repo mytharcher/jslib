@@ -76,11 +76,10 @@ js.dom.Cookie = {
 	 * @method js.dom.Cookie.remove
 	 * @static
 	 * 
-	 * @param {String/Array} key
-	 * @param {Object} option
+	 * @param {String...} key
 	 */
-	remove: function (key, option) {
-		var keys = key instanceof Array ? key : [key],
+	remove: function (key) {
+		var keys = [].slice.call(arguments, 0),
 			option = {until: 0};
 //		document.cookie = keys.join('=1;') + '=1;expires=' + (new Date(0)).toGMTString();
 		for (var i = keys.length - 1; i >= 0; i--) {

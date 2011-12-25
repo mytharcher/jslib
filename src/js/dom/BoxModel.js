@@ -2,33 +2,26 @@
  * jslib JavaScript Library
  * 
  * create:
- * @2010-11-15 by mytharcher
+ * @2011-08-13 by mytharcher
  * 
  * update:
- * @2010-11-17 by mytharcher
  */
 
-///import js.util.Class;
-///import js.dom;
+///import js.dom.Stage.get;
+///import js.dom.Style;
+///import js.dom.Traversal.up;
 
 /**
- * @class js.dom.BoxModel
- * 盒子模型类
+ * 获取元素的位置
+ * @method js.dom.BoxModel.getPosition
  * @static
- * @singleton
+ * 
+ * @param {Element} el
+ * @param {Element} refer 相对的元素，如不传入则只计算相对父级节点的位置
+ * 
+ * @return {Object} 返回包含位置坐标x, y属性的对象
  */
-js.dom.BoxModel = js.dom.BoxModel || {
-	
-	
-	/**
-	 * 获取元素的位置
-	 * @static
-	 * 
-	 * @param {Element} el
-	 * @param {Element} refer 相对的元素，如不传入则只计算相对父级节点的位置
-	 * 
-	 * @return {Object} 返回包含位置坐标x, y属性的对象
-	 */
+js.dom.BoxModel = {
 	getPosition: function (el, refer) {
 		var pos = {x: 0, y: 0};
 		
@@ -65,31 +58,20 @@ js.dom.BoxModel = js.dom.BoxModel || {
 	},
 	
 	/**
-	 * 判断元素是否可见
-	 * @public
+	 * 向上遍历获取一个元素的绝对可见状态
+	 * @method js.dom.Stage.isDisplaying
+	 * @static
 	 * 
-	 * @param {Element} context 查找的上下文，默认为documentElement
+	 * @param {Element} element 要获取的元素
 	 * 
 	 * @return {Boolean}
 	 */
-	isVisible: function (element, context) {
-		var visible = true,
-			documentElement = context || document.documentElement,
-			Style = js.dom.Style;
-		for (var node = element; node && node != documentElement; node = node.parentNode) {
-			if (Style.get(node, 'display') == 'none') {
-				visible = false;
-				break;
-			}
-		}
-		
-		return visible;
-	},
-	
 	isDisplaying: function (element) {
-		var displaying = true;
-		js.dom.Traversal.up(element, function () {
-			return (displaying = js.dom.Style.get(this, 'display') == 'none');
+		var Style = js.dom.Style;
+		return !!js.dom.Traversal.up(js.dom.Stage.get(element), function (node) {
+			if (node.nodeType == 'input' && node.type == 'hidden' || Style.get(node, 'display') == 'none') {
+				return false;
+			}
 		});
 	}
 };

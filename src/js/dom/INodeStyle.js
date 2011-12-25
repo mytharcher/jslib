@@ -7,7 +7,8 @@
  * update:
  * @2010-11-19 by mytharcher
  * @2010-11-30 by mytharcher
- * 
+ * @2011-09-25 by mytharcher
+ * 		[m] Move 'css()' method out of interface factory to be a single implement.
  */
 
 ///import js.util.Class;
@@ -39,26 +40,25 @@
  * @param {String/undefined} value 要设置的样式值
  * @return {Node} 返回当前集合对象，供链式操作继续调用
  */
-/**
- * 获取/设置元素集合的css
- */
 js.dom.INodeStyle = js.dom.INodeStyle || js.dom.NodeInterfaceFactory.create({
+	name: 'Style',
 	base: js.dom.Style,
 	methods: [
-		{method: 'getStyle', single: true},
-		'setStyle',
-		{method: 'css', custom: function (key, value) {
-			if (typeof value != 'undefined') {
-				if (typeof key == 'undefined' || typeof key == 'string' && key.indexOf(':') < 0) {
-					return this.getStyle(key);
-				} else {
-					return this.setStyle(key);
-				}
-			} else {
-				return this.setStyle(key, value);
-			}
-		}}
+		{method: 'get', single: true},
+		'set'
 	]
 });
+
+js.dom.INodeStyle.css = function (key, value) {
+	if (typeof value != 'undefined') {
+		if (typeof key == 'undefined' || typeof key == 'string' && key.indexOf(':') < 0) {
+			return this.getStyle(key);
+		} else {
+			return this.setStyle(key);
+		}
+	} else {
+		return this.setStyle(key, value);
+	}
+};
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeStyle);

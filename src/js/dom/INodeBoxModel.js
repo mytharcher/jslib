@@ -6,7 +6,7 @@
  * 
  * update:
  * @2010-11-30 by mytharcher
- * 
+ * @2011-12-24 by mytharcher
  */
 
 ///import js.util.Class;
@@ -35,12 +35,15 @@
 
 /**
  * 判断集合首个元素是否可见
- * @method isVisible
+ * @method isDisplaying
  * @return {Boolean}
  */
-js.dom.INodeBoxModel = js.dom.INodeClassName || js.dom.NodeInterfaceFactory.create({
-	base: js.dom.BoxModel,
-	methods: [{method: 'getPosition', single: true}, {method: 'isVisible', single: true}]
+js.dom.INodeBoxModel = js.dom.INodeBoxModel || js.dom.NodeInterfaceFactory.create({
+	base: {
+		getPosition: js.dom.BoxModel.getPosition,
+		isDisplaying: js.dom.BoxModel.isDisplaying
+	},
+	methods: [{method: 'getPosition', single: true}, {method: 'isDisplaying', single: true}]
 });
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeBoxModel);

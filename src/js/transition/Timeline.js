@@ -11,6 +11,7 @@
  */
 
 ///import js.util.Class;
+///import js.util.Global.noop;
 ///import js.transition;
 
 /**
@@ -25,8 +26,8 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
 	constructor: function (config) {
 		var Class = js.util.Class;
 		
-		Class.extend(this, config);
-		Class.extend(this, this.constructor.config);
+		Class.mix(this, config);
+		Class.mix(this, this.constructor.config);
 		
 		//定时执行句柄
 		this.interval = null;
@@ -87,7 +88,7 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
 	 * @return {Object}
 	 */
 	getOptions: function (option) {
-		return js.util.Class.extend(option || {}, {
+		return js.util.Class.mix(option || {}, {
 			fps: this.fps,
 			duration: this.duration,
 			offset: this.offset,
@@ -138,7 +139,7 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
 	 * @return {Number}
 	 */
 	resume: function (option) {
-		return this.start(js.util.Class.extend(option || {}, {
+		return this.start(js.util.Class.mix(option || {}, {
 			offset: this.duration * this.percent
 		}));
 	},
@@ -171,7 +172,7 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
  * @ignore
  * Timeline类静态成员定义
  */
-js.util.Class.extend(js.transition.Timeline, {
+js.util.Class.copy({
 	/**
 	 * @static
 	 * @property js.transition.Timeline.DIRECTION_FORWARD 正向(enum)
@@ -261,8 +262,8 @@ js.util.Class.extend(js.transition.Timeline, {
 	 */
 	prepare: function (option) {
 		var Class = js.util.Class;
-		Class.extend(option, this.config);
-		Class.extend(option, {
+		Class.mix(option, this.config);
+		Class.mix(option, {
 			//记录即将开始的定时器的id
 			id: this.getNextTimer(),
 			
@@ -311,15 +312,15 @@ js.util.Class.extend(js.transition.Timeline, {
 	 * @return {Number}
 	 */
 	run: function (option) {
-		var spendTime = (Date.now() - option.startTime + option.offset) * option.speed;
+		option.spend = (Date.now() - option.startTime + option.offset) * option.speed;
 		
 		if (!option.frame++ && typeof option.onFirstFrame == 'function') {
 			option.onFirstFrame();
 		}
 		
-		if (spendTime < option.period) {
+		if (option.spend < option.period) {
 			if (typeof option.onEnterFrame == 'function') {
-				option.onEnterFrame(spendTime);
+				option.onEnterFrame(option.spend);
 			}
 		} else {
 			this.stop(option.id);
@@ -379,7 +380,7 @@ js.util.Class.extend(js.transition.Timeline, {
 			this.stop(i);
 		}
 	}
-});
+}, js.transition.Timeline);
 
 ///import js.client.Features.~dateNow;
 ///import js.client.Features.~setInterval;

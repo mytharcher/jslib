@@ -64,7 +64,7 @@ js.dom.Operation = js.dom.Operation || {
 	 * @static
 	 * 
 	 * @param {Element/String} element
-	 * @param {Element/String} afterElement
+	 * @param {Element} afterElement
 	 */
 	before: function (element, afterElement) {
 		this.insert(element, afterElement.parentNode, afterElement);
@@ -76,7 +76,7 @@ js.dom.Operation = js.dom.Operation || {
 	 * @static
 	 * 
 	 * @param {Element/String} element
-	 * @param {Element/String} beforeElement
+	 * @param {Element} beforeElement
 	 */
 	after: function (element, beforeElement) {
 		this.insert(element, beforeElement.parentNode, js.dom.Relation.next(beforeElement));
@@ -109,6 +109,8 @@ js.dom.Operation = js.dom.Operation || {
 	
 	/**
 	 * 清空一个元素的内容
+	 * @method js.dom.Operation.empty
+	 * 
 	 * @param {Element/String} element
 	 */
 	empty: function (element) {
@@ -148,7 +150,7 @@ js.dom.Operation = js.dom.Operation || {
 	}
 };
 
-///import js.util.Global;
+///import js.util.Global.noop;
 ///import js.util.Type;
 ///import js.dom.Stage.get;
 ///import js.dom.Relation;

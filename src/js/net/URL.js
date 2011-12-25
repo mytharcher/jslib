@@ -1,5 +1,16 @@
+/*
+ * jslib JavaScript Library
+ * 
+ * create:
+ * @2010-04-09 by mytharcher
+ * 
+ * update:
+ * @2011-09-18 by mytharcher
+ * 		[a] Add method "removeParameter" for removing a key of url's parameter
+ * 		[a] Add method "clearParameter" for removing all keys of url's parameter
+ */
+
 ///import js.util.Class;
-///import js.text.Template;
 ///import js.util.Type;
 ///import js.net;
 ///import js.net.URLParameter;
@@ -63,7 +74,7 @@ js.net.URL = js.util.Class.create({
 	constructor: function (args) {
 		var args = args || {};
 		
-		js.util.Class.extend(this, this.constructor.config);
+		js.util.Class.mix(this, this.constructor.Config);
 		
 		js.util.Class.copy(
 			js.util.Type.isString(args) || args === location ?
@@ -197,21 +208,45 @@ js.net.URL = js.util.Class.create({
 	},
 	
 	/**
+	 * 移除指定的参数，详见：{@link js.net.URLParameter.set}
+	 * @param {String} key
+	 * 
+	 * @return {js.net.URL} 返回自身实例，以供链式调用
+	 */
+	removeParameter: function (key) {
+		this.parameter.set(key, null);
+		return this;
+	},
+	
+	/**
+	 * 移除所有参数，详见：{@link js.net.URLParameter.clear}
+	 * 
+	 * @return {js.net.URL} 返回自身实例，以供链式调用
+	 */
+	clearParameter: function () {
+		this.parameter.clear();
+		return this;
+	},
+	
+	/**
 	 * 获取URL的参数部分
 	 * @param {Function} encoder (optional)编码函数 @see js.net.URLParameter
+	 * @param {Boolean} withSep (optional)是否需要问号分隔符，默认：false
 	 * @return {String}
 	 */
-	getQuery: function (encoder) {
+	getQuery: function (encoder, withSep) {
 		var param = this.parameter.toString(encoder);
-		return param ? '?' + param : '';
+		return param ? (withSep ? '?' + param : param) : '';
 	},
 	
 	/**
 	 * 获取URL的hash部分
+	 * @param {Boolean} withSep (optional)是否需要井号分隔符，默认：false
 	 * @return {String}
 	 */
-	getHash: function () {
-		return this.hash ? '#' + this.hash : '';
+	getHash: function (withSep) {
+		var hash = this.hash;
+		return hash ? (withSep ? '#' + hash : hash) : '';
 	},
 	
 	/**
@@ -220,18 +255,18 @@ js.net.URL = js.util.Class.create({
 	 * @return {String}
 	 */
 	toString: function (encoder) {
-		return js.text.Template.format(this.constructor.URL_TEMPLATE, {
-			protocol: this.getProtocol(true),
-			host: this.getHost(),
-			path: this.path,
-			param: this.getQuery(encoder),
-			hash: this.getHash()
-		});
+		return [
+			this.getProtocol(true),
+			this.getHost(),
+			this.path,
+			this.getQuery(encoder, true),
+			this.getHash(true)
+		].join('');
 	}
 });
 
 
-js.util.Class.extend(js.net.URL, {
+js.util.Class.mix(js.net.URL, {
 	/**
 	 * @constant
 	 * @static
@@ -258,16 +293,9 @@ js.util.Class.extend(js.net.URL, {
 	
 	/**
 	 * @ignore
-	 * @constant
-	 * 输出模板
-	 */
-	URL_TEMPLATE: '#{protocol}#{host}#{path}#{param}#{hash}',
-	
-	/**
-	 * @ignore
 	 * 默认配置项
 	 */
-	config: {
+	Config: {
 		protocol: '',
 		hostname: '',
 		port: '',
@@ -288,7 +316,7 @@ js.util.Class.extend(js.net.URL, {
 	parseJSON: function (u) {
 		var Class = js.util.Class,
 			Type = js.util.Type,
-			json = Class.copy(this.config);
+			json = Class.copy(js.net.URL.Config);
 		if (!u || u == location.href || u === location) {
 			var u = location;
 			json = Class.copy({

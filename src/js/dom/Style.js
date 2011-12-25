@@ -10,6 +10,8 @@
  * @2011-01-11 by mytharcher
  * @2011-02-18 by mytharcher
  * 		[m] Add "Object" result type for method "get" when "key" is not passed in.
+ * @2011-10-31 by mytharcher
+ * 		[a] Add own constructor.
  */
 
 ///import js.client.Browser;
@@ -25,24 +27,22 @@
  * @extends js.util.Hash
  */
 js.dom.Style = js.dom.Style || js.util.Class.create({
+	constructor: function () {
+		js.util.Hash.apply(this, arguments);
+	},
 	/**
 	 * 生成以分号分隔的样式属性字符串
 	 * @return {String}
 	 */
-	toString: function() {
-		return this.constructor._toString(this._data);
-	}
+	toString: (function() {
+		var toString = js.text.JSONParserFactory.createStringifier(';', ':', null, true);
+		return function () {
+			return toString(this._data);
+		}
+	})()
 }, js.util.Hash);
 
 js.util.Class.copy({
-	
-	
-	/**
-	 * 实例toString的内部方法，由JSON字符串生成器工厂创建
-	 * @ignore
-	 */
-	_toString: js.text.JSONParserFactory.createStringifier(';', ':', null, true),
-	
 	/**
 	 * 将css字符串转化为JSON键值对
 	 * @method js.dom.Style.parseJSON
@@ -86,7 +86,8 @@ js.util.Class.copy({
 			key = key ? Style.toCamelCase(key) : '',
 			value,
 			// 在IE下，Element没有在文档树上时，没有currentStyle属性
-			style = elem.currentStyle || (js.client.Browser.IE ? elem.style : document.defaultView.getComputedStyle(elem, null));
+//			style = elem.currentStyle || (js.client.Browser.IE ? elem.style : document.defaultView.getComputedStyle(elem, null)),
+			style = js.client.Browser.IE ? elem.currentStyle || elem.style : document.defaultView.getComputedStyle(elem, null);
 		
 		if (key) {
 			value = elem.style[key];
@@ -147,7 +148,7 @@ js.util.Class.copy({
 	 * 
 	 * @param {Element} element 要操作的对象
 	 * @param {Object/Style/String} style 要设置的样式
-	 * @param {Boolean} clean 是否清除原有cssText后再添加，默认：false
+	 * @param {Boolean} clean (optional)是否清除原有cssText后再添加，默认：false
 	 * 
 	 * @return {void}
 	 */

@@ -62,10 +62,11 @@ js.dom.Selector = js.dom.Selector || {
 		var tag = atom[3] || '*';
 		cur = atom[4] && tag == '*' ? cur : cur.replace(_.T, (atom[1] || ' ') + tag + (atom[4] || ''));
 		
+		atom = _.W.exec(cur);
+		_.W.lastIndex = 0;
+		
 		for (var i = 0, len = c.length; i < len; i++) {
-			atom = _.W.exec(cur);
 			temp = _.G[atom[1]].call(c[i], atom[2]);
-			_.W.lastIndex = 0;
 			
 			ret.push.apply(ret, this.filter(temp, cur, c[i]));
 		}

@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jslib JavaScript Library - Test cases</title>
+
+<!--qunit js -->
+<link media="screen" href="../external/qunit/qunit.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript" src="../external/qunit/jquery-1.4.4.js"></script>
+<script type="text/javascript" src="../external/qunit/qunit.js"></script>
+<!--qunit js -->
+
+</head>
+<body>
+<h1 id="qunit-header">jslib JavaScript Library - Test cases</h1>
+
+<h2 id="qunit-banner"></h2>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+
+<div id="Test">
+	<div id="Test_js">
+		<div id="Test_js-dom">
+			<div class="head">
+				<h1 id="title">Selectors</h1>
+				<h2>W3C Working Draft 15 December 2005</h2>
+				<dl id="Test_js-dom-Traversal-tree">
+					<dt id="Test-js_util_XArray_toArray-dt1">This version:</dt>
+					<dd><a href="http://www.w3.org/TR/2005/WD-css3-selectors-20051215"> http://www.w3.org/TR/2005/WD-css3-selectors-20051215</a></dd>
+					<dt id="Test-js_util_XArray_toArray-dt2">Latest version:</dt>
+					<dd><a href="http://www.w3.org/TR/css3-selectors"> http://www.w3.org/TR/css3-selectors</a></dd>
+					<dt id="Test-js_util_XArray_toArray-dt3">Previous version:</dt>
+					<dd><a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113"> http://www.w3.org/TR/2001/CR-css3-selectors-20011113</a></dd>
+					<dt id="Test-js_util_XArray_toArray-dt4"><a name="editors-list"></a>Editors:</dt>
+					<dd class="vcard"><span class="fn">Daniel Glazman</span> (Invited Expert)</dd>
+					<dd class="vcard"><a lang="tr" class="url fn" href="http://www.tantek.com/">Tantek &Ccedil;elik</a> (Invited Expert)</dd>
+					<dd class="vcard"><a href="mailto:ian@hixie.ch" class="url fn">Ian Hickson</a> (<span
+				class="company"><a href="http://www.google.com/">Google</a></span>)</dd>
+					<dd class="vcard"><span class="fn">Peter Linss</span> (former editor, <span class="company"><a
+				href="http://www.netscape.com/" id="Test_js-dom-Traversal-up">Netscape/AOL</a></span>)</dd>
+					<dd class="vcard"><span class="fn">John Williams</span> (former editor, <span class="company"><a
+				href="http://www.quark.com/">Quark, Inc.</a></span>)</dd>
+				</dl>
+				<p class="copyright"><a
+			   href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright"> Copyright</a> &copy; 2005 <a href="http://www.w3.org/"><abbr
+			   title="World Wide Web Consortium">W3C</abbr></a><sup>&reg;</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts
+			   Institute of Technology">MIT</abbr></a>, <a
+			   href="http://www.ercim.org/"><acronym title="European Research
+			   Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a
+			   href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved.  W3C <a
+			   href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a
+			   href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, <a
+			   href="http://www.w3.org/Consortium/Legal/copyright-documents">document
+					use</a> rules apply.</p>
+				<hr title="Separator for header" />
+			</div>
+			<div class="operation" id="Test_js-dom-Traversal-performance"></div>
+		</div>
+	</div>
+	
+	<div id="Test_js-dom-Style">
+		<div id="test-js-dom-classname">
+			<p id="test-js-dom-classname-1">Test element for class js.dom.ClassName (1)</p>
+			<p id="test-js-dom-classname-2">Test element for class js.dom.ClassName (2)</p>
+			<p id="test-js-dom-classname-3">Test element for class js.dom.ClassName (3)</p>
+		</div>
+	</div>
+	<iframe src="js/cookie-test/path-test-a.html" id="path-test-a"></iframe>
+	<iframe src="js/cookie-test/path-test/path-test-b.html" id="path-test-b"></iframe>
+	
+	<div id="container"></div>
+	<div id="depth" style="position:absolute; z-index:100"></div>
+	
+	<div id="Test_js-dom-Tween" style="position:absolute; width:200px; height:100px; background:#ccc; border:1px solid #666;">abcd
+	<p>mouseover here to test case 2.</p>
+	</div>
+	<iframe src="js/type-test/iframe.html" id="test-js-util-type-sub"></iframe>
+</div>
+
+<script type="text/javascript" src="../release/elf-0.3.0.js"></script>
+<script>
+document.write([
+	'js.client.Browser',
+	'js.dom.ClassName',
+	'js.dom.Cookie',
+	'js.dom.Node',
+//	'js.dom.Operation',
+	'js.dom.Stage',
+	'js.dom.Style',
+	'js.dom.Traversal',
+	'js.dom.Tween',
+	'js.net.URL',
+	'js.net.URLParameter',
+	'js.text.Template',
+	'js.text.WordString',
+	'js.util.Class',
+	'js.util.Namespace',
+	'js.util.Shortcut',
+	'js.util.Type',
+	'js.util.XArray'
+].sort().map(function (item) {
+	return '<script type="text/javascript" src="' + item.replace(/\./g, '/') + '.js"><\/script>'
+}).join(''));
+</script>
+</body>
+</html>

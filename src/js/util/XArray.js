@@ -8,10 +8,13 @@
  * @2010-11-20 by mytharcher
  * @2010-12-25 by mytharcher
  * 		[m] Move all seperated method files in the namespace js.util.XArray here.
+ * @2011-08-29 by mytharcher
+ * 		[m] Fix bug in method "distinct" for some duplicate stamp use.
  */
 
 ///import js.util;
 ///import js.util.Class;
+///import js.util.Global.stamp;
 
 if (!js.util.XArray) {
 
@@ -26,7 +29,7 @@ if (!js.util.XArray) {
  */
 js.util.XArray = function(){
 	if (this.constructor != js.util.XArray) {
-		return js.util.XArray.toXArray(arguments[0]);
+		return js.util.XArray.toXArray(arguments);
 	}
 	return [].push.apply(this, arguments);
 };
@@ -39,7 +42,7 @@ js.util.Class.copy({
 	/**
 	 * @ignore
 	 */
-	superClass: Array,
+	Super: Array,
 	
 	/**
 	 * 去重的实例方法
@@ -109,7 +112,7 @@ js.util.Class.copy({
 	distinct: function(arrayLike){
 		var copy = arrayLike.slice(),
 			typeMap = {},
-			Global = js.util.Global,
+			guid = js.util.Global.guid('xarray'),
 			ret = [],
 			i = 0,
 			len = copy.length,
@@ -126,7 +129,7 @@ js.util.Class.copy({
 				case 'function':
 				case 'object':
 					if (item) {
-						var tag = Global.stamp(item);
+						var tag = js.util.Global.stamp(item, guid);
 						if (!map[tag]) {
 							map[tag] = true;
 							ret.push(item);
@@ -146,12 +149,11 @@ js.util.Class.copy({
 		}
 		
 		//删除用于去重对象上的标记
-		var stamp = Global.STAMP;
 		for (var i = copy.length - 1; i >= 0; i--) {
 			var item = copy[i],
 				type = item && typeof item;
 			if (type == 'object' || type == 'function') {
-				delete item[stamp];
+				delete item[guid];
 			}
 		}
 		
@@ -195,8 +197,8 @@ js.util.Class.copy({
 	 * @return {XArray}
 	 */
 	toXArray: function(arrayLike){
-		var ret = new this();
-		[].push.apply(ret, this.toArray(arrayLike));
+		var ret = new js.util.XArray();
+		[].push.apply(ret, js.util.XArray.toArray(arrayLike));
 		return ret;
 	}
 }, js.util.XArray);
