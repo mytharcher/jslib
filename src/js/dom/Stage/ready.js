@@ -122,7 +122,7 @@ js.dom.Stage.ready = (function(){
 	bindReady();
 	
 	return function(){
-		var args = [].slice.call(arguments);
+		var args = [].slice.call(arguments, 0);
 		queue.push(args);
 		isReady && start();
 		return arguments.callee;

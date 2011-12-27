@@ -75,7 +75,7 @@ js.text.Template = js.text.Template || {
 			Template.delimiter();
 		}
 		var fnBody = [
-			'var args = args && typeof args == "object" ? args : [].slice.call(arguments);',
+			'var args = args && typeof args == "object" ? args : [].slice.call(arguments, 0);',
 			'return ["',
 			tpl.replace(/(["'])/g, '\\\x241').replace(Template._re, '", args["\x241"], "'),
 			'"].join("");'

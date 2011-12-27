@@ -59,7 +59,7 @@ js.util.InterfaceFactory = js.util.InterfaceFactory || {
 	 */
 	template: function (base, method) {
 		return function () {
-			return base[method].apply(base, [this].concat([].slice.call(arguments)));
+			return base[method].apply(base, [this].concat([].slice.call(arguments, 0)));
 		};
 	}
 };

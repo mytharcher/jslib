@@ -52,7 +52,7 @@ if (js.net.URLParameter) {
 		equals(p1.get('def'), 'def');
 		
 		var p2 = new UP({a:1, b:[2, 3]});
-		equals(p2.get('a')[0], '1');
+		equals(p2.get('a'), '1');
 		equals(p2.get('b').join(), '2,3');
 		
 		var p3 = new UP({});

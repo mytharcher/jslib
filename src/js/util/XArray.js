@@ -28,21 +28,14 @@ if (!js.util.XArray) {
  * @param {Any...} arguments
  */
 js.util.XArray = function(){
-	if (this.constructor != js.util.XArray) {
-		return js.util.XArray.toXArray(arguments);
-	}
-	return [].push.apply(this, arguments);
+	var arr = [];
+	arr.push.apply(arr, [].slice.call(arguments, 0));
+	js.util.Class.copy(this.constructor.prototype, arr);
+	return arr;
 };
-
-js.util.XArray.prototype = [];
 
 js.util.Class.copy({
 	constructor: js.util.XArray,
-	
-	/**
-	 * @ignore
-	 */
-	Super: Array,
 	
 	/**
 	 * 去重的实例方法
@@ -93,7 +86,7 @@ js.util.Class.copy({
 	 * @return {Array}
 	 */
 	toArray: function(){
-		return this.slice();
+		return this.slice(0);
 	}
 }, js.util.XArray.prototype);
 
@@ -178,7 +171,7 @@ js.util.Class.copy({
 		if (typeof length == 'undefined' || type == 'string' || type == 'function' || arrayLike.setTimeout || arrayLike.nodeType) {
 			ret.push(arrayLike);
 		} else if (arrayLike instanceof Array || arrayLike.callee) {//数组或参数对象直接调用数组方法生成副本
-			ret = [].slice.call(arrayLike);
+			ret = [].slice.call(arrayLike, 0);
 		} else {//其他如HTMLCollection或childNodes遍历复制
 			for (var i = 0; i < length && typeof arrayLike[i] != 'undefined'; ) {
 				ret.push(arrayLike[i++]);

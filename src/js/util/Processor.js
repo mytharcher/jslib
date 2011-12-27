@@ -90,7 +90,7 @@ js.util.Processor.asyncQueue(fn1, fn2, callback);
 		
 		return function () {
 			queue.push({
-				group: [].slice.call(arguments),
+				group: [].slice.call(arguments, 0),
 				next: process
 			});
 			

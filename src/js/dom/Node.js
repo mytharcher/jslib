@@ -62,6 +62,8 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 				break;
 		}
 		
+		this.length = 0;
+		
 		return this.merge(queryResult);
 	},
 	
@@ -139,7 +141,6 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 	merge: function (arrayLike) {
 		var arr = js.util.XArray.toArray(arrayLike);
 		[].push.apply(this, arr);
-		this.length += arr.length;
 		return this;
 	},
 	
@@ -160,7 +161,11 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 	 * @return {Array}
 	 */
 	toArray: function () {
-		return [].slice.call(this);
+		var ret = [];
+		for (var i = this.length - 1; i >= 0; i--) {
+			ret.unshift(this[i]);
+		}
+		return ret;
 	}
 });
 

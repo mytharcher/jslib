@@ -8,6 +8,9 @@ if (js.dom.Node) {
 		
 		var win = js.dom.Node(window);
 		equals(win[0], window, 'Use js.dom.Node(window), it will create a node instance containing only window object.');
+		
+		var test = js.dom.Node('#Test');
+		equals(test[0], document.getElementById('Test'), 'Use #id to create a node instance should contain the only element by id.');
 	});
 	
 	if (js.dom.INodeAttribute) {

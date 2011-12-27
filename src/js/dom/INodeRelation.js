@@ -94,7 +94,7 @@
 js.dom.INodeRelation = js.dom.INodeRelation || js.util.InterfaceFactory.create({
 	template: function (base, method, key) {
 		return key.custom || (key.single ? function(){
-			return base[method].apply(base, [this[0]].concat([].slice.call(arguments)));
+			return base[method].apply(base, [this[0]].concat([].slice.call(arguments, 0)));
 		} : function (selector) {
 			var ret = [];
 			for (var i = 0; i < this.length; i++) {

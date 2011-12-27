@@ -125,7 +125,7 @@ js.util.Set = js.util.Set || js.util.Class.create({
 	 * @return {js.util.Set} 返回自身以供链式调用
 	 */
 	_processArguments: function (args, processor) {
-		[].slice.call(args).forEach(processor, this);
+		[].slice.call(args, 0).forEach(processor, this);
 		return this;
 	},
 	
