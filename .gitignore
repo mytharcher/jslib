@@ -9,3 +9,4 @@ release/*
 res/*
 scrap/*
 .project
+test/test.html
