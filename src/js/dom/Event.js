@@ -15,6 +15,7 @@
 
 ///import js.dom;
 ///import js.util.Global.stamp;
+///import js.dom.Selector;
 
 /**
  * @class js.dom.Event
@@ -119,8 +120,8 @@ js.dom.Event = js.dom.Event || {
 				if (object.addEventListener) {
 					object.addEventListener(type, processor, false);
 				} else if (object.attachEvent) {
-						object.attachEvent('on' + type, processor);
-					}
+					object.attachEvent('on' + type, processor);
+				}
 			}
 			
 			//array find
@@ -174,7 +175,9 @@ js.dom.Event = js.dom.Event || {
 			
 			if (filter) {
 				for (var node = target; node && node != this; node = node.parentNode) {
-					if ((typeof filter == 'function') && filter(node)) {
+					var filterType = typeof filter;
+					if (filterType == 'string' && js.dom.Selector.match(node, filter, this)
+						|| (filterType == 'function') && filter(node)) {
 						if (fn.call(node, e) === false) {
 							e.preventDefault();
 							break;
