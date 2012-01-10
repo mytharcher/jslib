@@ -27,7 +27,7 @@
  * 		[m] Abandon the auto-created constructor in newly created class without specifying a own constructor, for being more common as other languages.
  * 		[m] Remove "Super" in newly created sub-class to avoid confusion.
  * @2012-01-10 by mytharcher
- * 		[m] Change the type judgement by the class js.util.Type to native implement by typeof expression, to cut off the circle dependency.
+ * 		[m] Change the type judgement from by the class js.util.Type to native implement by typeof expression, to cut off the dependency circle.
  */
 
 ///import js.util;
