@@ -54,6 +54,9 @@ js.dom.BoxModel = {
 				pos.y += (parseInt(document.body.currentStyle.marginTop) || 0) * 2;
 			}
 		}
+		pos.left = pos.x;
+		pos.top = pos.y;
+		
 		return pos;
 	},
 	
