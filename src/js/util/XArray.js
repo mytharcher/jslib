@@ -35,7 +35,14 @@ js.util.XArray = js.util.XArray || js.util.Class.create({
 	constructor: function () {
 		var arr = [];
 		arr.push.apply(arr, [].slice.call(arguments, 0));
-		js.util.Class.copy(this.constructor.prototype, arr);
+		
+		// 防止IE下使用for in XArray.prototype取不到扩展的方法名（slice等）
+		var keys = js.util.XArray.__extends__;
+		for (var i = keys.length - 1; i >= 0; i--) {
+			var item = keys[i];
+			arr[item] = js.util.XArray.prototype[item];
+		}
+		
 		return arr;
 	},
 	
@@ -120,13 +127,19 @@ js.util.XArray = js.util.XArray || js.util.Class.create({
 	}
 }, Array);
 
-['filter', 'map', 'slice', 'sort'].forEach(function (item) {
-	this.prototype[item] = function () {
-		return this.constructor.toXArray([][item].apply(this, arguments));
+['filter', 'map', 'slice'].forEach(function (item) {
+	js.util.XArray.prototype[item] = function () {
+		return js.util.XArray.toXArray([][item].apply(this, arguments));
 	};
-}, js.util.XArray);
+});
 
 js.util.Class.copy({
+	/**
+	 * @ignore
+	 * @private
+	 */
+	__extends__: 'distinct indexOf forEach filter map slice toArray'.split(' '),
+	
 	/**
 	 * 数组去重
 	 * @method js.util.XArray.distinct

@@ -47,7 +47,7 @@ if (js.util.XArray) {
 		array = xArr.sort(function (a, b) {return b - a;});
 		equals(array.toString(), '4,3,1', 'The native method sort() can be invoked noramlly.');
 		ok(typeof array.distinct == 'function', 'The method sort() should return an instance of XArray for chaining');
-		ok(array != xArr, 'The method sort() should not change the origin one and should return a copy.');
+		ok(array == xArr, 'The method sort() would change the origin one but not return a copy.');
 	});
 	
 	test('xArr.indexOf()', function(){
