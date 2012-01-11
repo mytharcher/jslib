@@ -54,7 +54,7 @@ js.util.XArray = js.util.XArray || js.util.Class.create({
 	 * @see js.util.XArray.distinct
 	 */
 	distinct: function () {
-		var myClass = this.constructor;
+		var myClass = js.util.XArray;
 		return myClass.toXArray(myClass.distinct(this));
 	},
 	

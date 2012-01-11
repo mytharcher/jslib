@@ -5,7 +5,7 @@ if (js.dom.Stage) {
 	asyncTest('js.dom.Stage.ready(fn)', function(){
 		equals(js.dom.Stage.ready(new Function()), js.dom.Stage.ready, 'Return the js.dom.Stage.ready for chain more.');
 		
-		stop();
+		// stop();
 		var xx = 0;
 		js.dom.Stage.ready(function(){
 			xx = 100;
@@ -17,7 +17,7 @@ if (js.dom.Stage) {
 	});
 	
 	asyncTest('js.dom.Stage.ready(fn1)(fn2)', function(){
-		stop();
+		// stop();
 		
 		js.dom.Stage.ready(function(){
 			document.getElementById('container').innerHTML = '<p>test text</p>';

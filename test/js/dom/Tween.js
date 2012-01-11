@@ -4,7 +4,7 @@ if (js.dom.Tween) {
 	
 	asyncTest('js.dom.Tween.start()', function(){
 	
-		stop();
+		// stop();
 		
 		var div = document.getElementById('Test_js-dom-Tween');
 		
