@@ -171,7 +171,8 @@ if (js.dom.Node) {
 		});
 		
 		test('node.css()', function () {
-			
+			var absPosNode = js.dom.Node('#Test_js-dom-Tween');
+			equals(absPosNode.css('position'), 'absolute', 'When use css(key) can get current style value by the specified key.');
 		});
 	}
 }

@@ -50,7 +50,7 @@ js.dom.INodeStyle = js.dom.INodeStyle || js.dom.NodeInterfaceFactory.create({
 });
 
 js.dom.INodeStyle.css = function (key, value) {
-	if (typeof value != 'undefined') {
+	if (arguments.length <= 1) {
 		if (typeof key == 'undefined' || typeof key == 'string' && key.indexOf(':') < 0) {
 			return this.getStyle(key);
 		} else {
