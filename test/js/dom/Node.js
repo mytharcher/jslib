@@ -11,6 +11,8 @@ if (js.dom.Node) {
 		
 		var test = js.dom.Node('#Test');
 		equals(test[0], document.getElementById('Test'), 'Use #id to create a node instance should contain the only element by id.');
+		
+		equals(js.dom.Node(null).length, 0, 'When null passed in, ignore the value and create a empty instance.');
 	});
 	
 	if (js.dom.INodeAttribute) {

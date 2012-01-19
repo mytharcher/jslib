@@ -51,6 +51,7 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 				queryResult = selector.slice();
 				break;
 			
+			case Type.NULL:
 			case Type.UNDEFINED:
 				break;
 			
