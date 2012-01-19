@@ -89,7 +89,7 @@ js.dom.Selector = js.dom.Selector || {
 		var _ = this._;
 		var ret = [];
 		for (var j = 0, l = group.length; j < l; j++) {
-			if (this.match(group[j], selector, context)) {
+			if (group[j] && this.match(group[j], selector, context)) {
 				ret.push(group[j]);
 			}
 			
