@@ -24,6 +24,20 @@
  */
 js.dom.ClassName = js.dom.ClassName || {
 	/**
+	 * 获取一个DOM元素的class
+	 * @method js.dom.ClassName.get
+	 * @static
+	 * 
+	 * @param {String/Element} element DOM元素的引用或id
+	 * 
+	 * @return {Array} 返回className数组
+	 */
+	get: function (element) {
+		var elem = js.dom.Stage.get(element);
+		return (elem.className || '').split(' ');
+	},
+	
+	/**
 	 * 对一个DOM元素添加class
 	 * @method js.dom.ClassName.add
 	 * @static

@@ -43,6 +43,10 @@ if (js.dom.Node) {
 		test('node.addClass()', function () {
 			
 		});
+		test('node.getClass()', function () {
+			var node = js.dom.Node('#test-js-dom-classname');
+			equal(typeof node.getClass, 'function', 'The extended function should be implemented on any Node instance.');
+		});
 		
 		test('node.removeClass()', function () {
 			
