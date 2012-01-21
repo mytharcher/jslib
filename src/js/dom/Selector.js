@@ -177,9 +177,10 @@ js.dom.Selector = js.dom.Selector || {
 				ret = [];
 			for (var i = 0, len = arr.length; i < len; i++) {
 				var item = arr[i];
-				var tag = item[stamp];
+				var tag = item.getAttribute(stamp);
 				if (!tag) {
-					tag = (item[stamp] = count++);
+					tag = '' + count++;
+					item.setAttribute(stamp, tag);
 				}
 				if (!map[tag]) {
 					ret.push(item);
@@ -187,9 +188,9 @@ js.dom.Selector = js.dom.Selector || {
 				}
 			}
 			//IE 不支持删除标记
-//			for (var i = arr.length - 1; i >= 0; i--) {
-//				delete arr[i][stamp];
-//			}
+			for (var i = arr.length - 1; i >= 0; i--) {
+				arr[i].removeAttribute(stamp);
+			}
 			return ret;
 		}
 	}
