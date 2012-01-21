@@ -58,26 +58,12 @@ js.dom.Event = js.dom.Event || {
 		e.rightClick = e.which == 3 || e.button == 2;
 
 		//可在处理函数内调用e.preventDefault()来阻止浏览器默认事件
-		e.preventDefault = function () {
-			if (evt.preventDefault) {
-				evt.preventDefault();
-			} else {
-				evt.returnValue = false;
-			}
-		};
+		e.preventDefault = js.dom.Event._handlerPreventDefault.bind(evt);
 
 		//可在处理函数内调用e.stopPropagation()来阻止冒泡事件
-		e.stopPropagation = function () {
-			if (evt.stopPropagation) {
-				evt.stopPropagation();
-			} else {
-				evt.cancelBubble = true;
-			}
-		};
+		e.stopPropagation = js.dom.Event._handlerStopPropagation.bind(evt);
 		
-		e.stopAll = function () {
-			this.interrupt = true;
-		};
+		e.stopAll = js.dom.Event._handlerStopAll;
 		
 		return e;
 	},
@@ -170,8 +156,9 @@ js.dom.Event = js.dom.Event || {
 		
 		var queue = Event.regList[js.util.Type.isElement(this) ? this.id : js.util.Global.stamp(this)][e.type];
 		
-		outer: for (var i = 0, len = queue.length; i < len; i++) {
-			var fn = queue[i].fn, filter = queue[i].filter;
+		outer: for (var i = 0; i < queue.length; i++) {// 队列可能被执行函数改变，所以每次取length比较
+			var turn = queue[i];
+			var fn = turn.fn, filter = turn.filter;
 			
 			if (filter) {
 				for (var node = target; node && node != this; node = node.parentNode) {
@@ -189,6 +176,11 @@ js.dom.Event = js.dom.Event || {
 				}
 			} else {
 				fn.call(this, e);
+			}
+			// 如果执行函数中remove了队列中已执行过的函数（包括当前的），
+			// 则计数器-1并继续执行之后的，以免发生索引越界或跳过队列。
+			if (queue.indexOf(turn) < i) {
+				i--;
 			}
 		}
 	},
@@ -256,6 +248,40 @@ js.dom.Event = js.dom.Event || {
 		}
 	},
 	
+	/**
+	 * @private
+	 * 停止所有后续队列中的事件
+	 */
+	_handlerStopAll: function () {
+		this.interrupt = true;
+	},
+	
+	/**
+	 * @private
+	 * 阻止默认事件的处理
+	 * [scope at event]
+	 */
+	_handlerPreventDefault: function () {
+		if (this.preventDefault) {
+			this.preventDefault();
+		} else {
+			this.returnValue = false;
+		}
+	},
+	
+	/**
+	 * @private
+	 * 阻止事件冒泡的处理
+	 * [scope at event]
+	 */
+	_handlerStopPropagation: function () {
+		if (evt.stopPropagation) {
+			evt.stopPropagation();
+		} else {
+			evt.cancelBubble = true;
+		}
+	},
+	
 	Type: {
 		CLICK: 'click',
 		MOUSE_OVER: 'mouseover',
@@ -283,3 +309,5 @@ js.dom.Event = js.dom.Event || {
 ///import js.util.Type;
 ///import js.util.Type.~Element;
 ///import js.client.Features.~objectKeys;
+///import js.client.Features.~functionBind;
+///import js.client.Features.~arrayIndexOf;
