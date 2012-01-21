@@ -37,7 +37,7 @@ js.util.XArray = js.util.XArray || js.util.Class.create({
 		arr.push.apply(arr, [].slice.call(arguments, 0));
 		
 		// 防止IE下使用for in XArray.prototype取不到扩展的方法名（slice等）
-		var keys = js.util.XArray.__extends__;
+		var keys = js.util.XArray.__extends__.split(' ');
 		for (var i = keys.length - 1; i >= 0; i--) {
 			var item = keys[i];
 			arr[item] = js.util.XArray.prototype[item];
@@ -127,7 +127,7 @@ js.util.XArray = js.util.XArray || js.util.Class.create({
 	}
 }, Array);
 
-['filter', 'map', 'slice'].forEach(function (item) {
+['concat', 'filter', 'map', 'slice'].forEach(function (item) {
 	js.util.XArray.prototype[item] = function () {
 		return js.util.XArray.toXArray([][item].apply(this, arguments));
 	};
@@ -138,7 +138,7 @@ js.util.Class.copy({
 	 * @ignore
 	 * @private
 	 */
-	__extends__: 'distinct indexOf forEach filter map slice toArray'.split(' '),
+	__extends__: 'concat distinct indexOf forEach filter map slice toArray',
 	
 	/**
 	 * 数组去重

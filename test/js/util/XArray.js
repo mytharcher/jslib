@@ -48,6 +48,16 @@ if (js.util.XArray) {
 		equals(array.toString(), '4,3,1', 'The native method sort() can be invoked noramlly.');
 		ok(typeof array.distinct == 'function', 'The method sort() should return an instance of XArray for chaining');
 		ok(array == xArr, 'The method sort() would change the origin one but not return a copy.');
+		
+		array = xArr.reverse();
+		equals(array.toString(), '1,3,4', 'The native method reverse() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method reverse() should return an instance of XArray for chaining');
+		ok(array == xArr, 'The method reverse() would change the origin one but not return a copy.');
+		
+		array = xArr.concat([2, 5]);
+		equals(array.toString(), '1,3,4,2,5', 'The native method concat() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method concat() should return an instance of XArray for chaining');
+		ok(array != xArr, 'The method concat() would not change the origin one but return a copy.');
 	});
 	
 	test('xArr.indexOf()', function(){
