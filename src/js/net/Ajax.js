@@ -101,7 +101,7 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * 发送请求
 	 * @param {Object/URLParameter} 加载时的参数
 	 */
-	load: function (data) {
+	request: function (data) {
 		var myClass = this.constructor;
 		
 		var request = this.httpRequest;
@@ -232,16 +232,16 @@ js.util.Class.copy({
 	
 	/**
 	 * 加载一个Ajax请求
-	 * @method js.net.Ajax.load
+	 * @method js.net.Ajax.request
 	 * @static
 	 * 
 	 * @param {Object} option
 	 * 
 	 * @return {XMLHttpRequest}
 	 */
-	load: function (option) {
+	request: function (option) {
 		var ajax = new this(option);
-		ajax.load(option.data);
+		ajax.request(option.data);
 		return ajax.httpRequest;
 	},
 	
@@ -273,6 +273,17 @@ js.util.Class.copy({
 		return this.load(option);
 	}
 }, js.net.Ajax);
+
+/**
+ * 加载一个Ajax请求
+ * @method js.net.Ajax.load
+ * @static
+ * 
+ * @param {Object} option
+ * 
+ * @return {XMLHttpRequest}
+ */
+js.net.Ajax.load = js.net.Ajax.request;
 
 /**
  * 默认配置参数
