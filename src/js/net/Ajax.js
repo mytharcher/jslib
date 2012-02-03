@@ -240,7 +240,7 @@ js.util.Class.copy({
 	 * @return {XMLHttpRequest}
 	 */
 	request: function (option) {
-		var ajax = new this(option);
+		var ajax = new js.net.Ajax(option);
 		ajax.request(option.data);
 		return ajax.httpRequest;
 	},
@@ -255,8 +255,8 @@ js.util.Class.copy({
 	 * @return {XMLHttpRequest}
 	 */
 	get: function (option) {
-		option.method = this.HTTP_GET;
-		return this.load(option);
+		option.method = js.net.Ajax.HTTP_GET;
+		return js.net.Ajax.request(option);
 	},
 	
 	/**
@@ -269,8 +269,8 @@ js.util.Class.copy({
 	 * @return {XMLHttpRequest}
 	 */
 	post: function (option) {
-		option.method = this.HTTP_POST;
-		return this.load(option);
+		option.method = js.net.Ajax.HTTP_POST;
+		return js.net.Ajax.request(option);
 	}
 }, js.net.Ajax);
 
