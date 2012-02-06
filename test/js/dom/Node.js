@@ -117,7 +117,7 @@ if (js.dom.Node) {
 		});
 	}
 	
-	if (js.dom.INodeRalation) {
+	if (js.dom.INodeRelation) {
 		test('node.indexOfSiblings()', function () {
 			
 		});
@@ -139,7 +139,8 @@ if (js.dom.Node) {
 		});
 		
 		test('node.parent()', function () {
-			
+			var node = js.dom.Node('#Test_js-dom');
+			equal(node.parent()[0], document.getElementById('Test_js'), 'The method parent() should get the right element.');
 		});
 		
 		test('node.ancestors()', function () {

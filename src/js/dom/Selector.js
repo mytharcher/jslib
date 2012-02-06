@@ -18,8 +18,6 @@
  * @singleton
  */
 js.dom.Selector = js.dom.Selector || {
-	
-	
 	/**
 	 * 查询一个满足规则的对象
 	 * @method js.dom.Selector.query
@@ -31,7 +29,7 @@ js.dom.Selector = js.dom.Selector || {
 	 * @return {Element/Null}
 	 */
 	query: function (a, c) {
-		var result = this.queryAll(a, c);
+		var result = js.dom.Selector.queryAll(a, c);
 		return result.length ? result[0] : null;
 	},
 	
@@ -41,15 +39,14 @@ js.dom.Selector = js.dom.Selector || {
 	 * @static
 	 * 
 	 * @param {String} a 要查询的选择器串
-	 * @param {Object/Array} c 基于查询的空间
+	 * @param {Element/Array} c 基于查询的空间
 	 * 
 	 * @return {Array}
 	 */
 	queryAll: function(a, c){
-		var _ = this._;
+		var _ = js.dom.Selector._;
 		
-		c = c || document;
-		c = c instanceof Array ? c : [c];
+		c = c instanceof Array ? c.length ? c : [document] : [c || document];
 		
 		var ret = [], temp;
 		
@@ -68,7 +65,7 @@ js.dom.Selector = js.dom.Selector || {
 		for (var i = 0, len = c.length; i < len; i++) {
 			temp = _.G[atom[1]].call(c[i], atom[2]);
 			
-			ret.push.apply(ret, this.filter(temp, cur, c[i]));
+			ret.push.apply(ret, js.dom.Selector.filter(temp, cur, c[i]));
 		}
 		
 		return _.U(remain && ret.length && js.dom.Selector.queryAll(remain, ret) || ret);
@@ -86,10 +83,10 @@ js.dom.Selector = js.dom.Selector || {
 	 * @return {Array} 返回过滤后的元素数组
 	 */
 	filter: function (group, selector, context) {
-		var _ = this._;
+		var _ = js.dom.Selector._;
 		var ret = [];
 		for (var j = 0, l = group.length; j < l; j++) {
-			if (group[j] && this.match(group[j], selector, context)) {
+			if (group[j] && js.dom.Selector.match(group[j], selector, context)) {
 				ret.push(group[j]);
 			}
 			
@@ -110,7 +107,7 @@ js.dom.Selector = js.dom.Selector || {
 	 * @return {Boolean}
 	 */
 	match: function (item, selector, context) {
-		var _ = this._,
+		var _ = js.dom.Selector._,
 			context = context || document,
 			flag = true,
 			atom;

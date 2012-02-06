@@ -98,7 +98,8 @@ js.dom.INodeRelation = js.dom.INodeRelation || js.util.InterfaceFactory.create({
 		} : function (selector) {
 			var ret = [];
 			for (var i = 0; i < this.length; i++) {
-				ret.push.apply(ret, base[method](this[i], selector));
+				var result = base[method](this[i], selector);
+				ret.push.apply(ret, result instanceof Array ? result : [result]);
 			}
 			return this.constructor(js.util.XArray.distinct(ret));
 		});
