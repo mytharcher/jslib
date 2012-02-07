@@ -55,7 +55,7 @@ js.dom.INodeAttribute = js.dom.INodeAttribute || js.dom.NodeInterfaceFactory.cre
 	]
 });
 
-js.dom.INodeAttribute.attr = function (element, key, value) {
+js.dom.INodeAttribute.attr = function (key, value) {
 	var node = this.get(0),
 		Type = js.util.Type;
 	if (Type.isDefined(value) || Type.isObject(key)) {
