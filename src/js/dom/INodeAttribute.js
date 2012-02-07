@@ -51,18 +51,19 @@ js.dom.INodeAttribute = js.dom.INodeAttribute || js.dom.NodeInterfaceFactory.cre
 	base: js.dom.Attribute,
 	methods: [
 		{method: 'get', single: true},
-		'set',
-		{method: 'attr', custom: function (element, key, value) {
-			var node = this.get(0),
-				Type = js.util.Type;
-			if (Type.isDefined(value) || Type.isObject(key)) {
-				this.setAttribute(key, value);
-			} else {
-				return this.getAttribute(key);
-			}
-			return this;
-		}}
+		'set'
 	]
 });
+
+js.dom.INodeAttribute.attr = function (element, key, value) {
+	var node = this.get(0),
+		Type = js.util.Type;
+	if (Type.isDefined(value) || Type.isObject(key)) {
+		this.setAttribute(key, value);
+	} else {
+		return this.getAttribute(key);
+	}
+	return this;
+};
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeAttribute);
