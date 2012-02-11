@@ -81,31 +81,151 @@
 	<iframe src="about:blank" id="test-js-util-type-sub"></iframe>
 </div>
 
-<script type="text/javascript" src="../release/js.js"></script>
 <script>
-document.write([
-	'js.client.Browser',
-	'js.dom.ClassName',
-	'js.dom.Cookie',
-	'js.dom.Node',
-//	'js.dom.Operation',
-	'js.dom.Selector',
-	'js.dom.Stage',
-	'js.dom.Style',
-	'js.dom.Traversal',
-	'js.dom.Tween',
-	'js.net.URL',
-	'js.net.URLParameter',
-	'js.text.Template',
-	'js.text.WordString',
-	'js.util.Class',
-	'js.util.Namespace',
-	'js.util.Shortcut',
-	'js.util.Type',
-	'js.util.XArray'
-].sort().map(function (item) {
-	return '<script type="text/javascript" src="' + item.replace(/\./g, '/') + '.js"><\/script>'
-}).join(''));
+(function () {
+
+var srcSet = [
+'js',
+'js/client',
+'js/client/Browser',
+'js/client/Features',
+'js/util',
+'js/util/Global',
+'js/util/Global/guid',
+'js/client/Features/scriptEval',
+'js/client/Features/~arrayEvery',
+'js/client/Features/~arrayFilter',
+'js/client/Features/~arrayForEach',
+'js/client/Features/~arrayIndexOf',
+'js/client/Features/~arrayMap',
+'js/client/Features/~arraySome',
+'js/client/Features/~dateNow',
+'js/client/Features/~functionBind',
+'js/client/Features/~ieBackgoundCache',
+'js/client/Features/~json',
+'js/client/Features/~objectKeys',
+'js/client/Features/~setInterval',
+'js/client/Features/~setTimeout',
+'js/client/Features/~stringTrim',
+'js/dom',
+'js/dom/Attribute',
+'js/dom/Stage',
+'js/dom/Stage/get',
+'js/util/Class',
+'js/util/Hash',
+'js/text',
+'js/text/JSONParserFactory',
+'js/dom/Style',
+'js/dom/Traversal',
+'js/dom/Traversal/up',
+'js/dom/BoxModel',
+'js/util/Type',
+'js/util/Global/_STAMP',
+'js/util/Global/stamp',
+'js/util/Set',
+'js/text/WordString',
+'js/dom/ClassName',
+'js/dom/Cookie',
+'js/dom/Stage/mark',
+'js/dom/Selector',
+'js/util/XArray',
+'js/util/Type/~Element',
+'js/dom/Event',
+'js/dom/MouseTracker',
+'js/dom/Drag',
+'js/util/Type/~Document',
+'js/util/Type/~Window',
+'js/util/Type/~XArray',
+'js/dom/Node',
+'js/util/InterfaceFactory',
+'js/dom/NodeInterfaceFactory',
+'js/dom/INodeAttribute',
+'js/dom/INodeBoxModel',
+'js/dom/INodeClassName',
+'js/dom/INodeEvent',
+'js/util/Global/noop',
+'js/util/Shortcut',
+'js/dom/Relation',
+'js/dom/Operation',
+'js/dom/INodeOperation',
+'js/dom/INodeRelation',
+'js/dom/INodeStyle',
+'js/transition',
+'js/transition/Timeline',
+'js/transition/Easing',
+'js/transition/Easing/linear',
+'js/dom/Tween',
+'js/dom/INodeTween',
+'js/dom/Stage/evalScript',
+'js/dom/Stage/getDocument',
+'js/dom/Stage/getDocumentElement',
+'js/dom/Stage/getNextHighestDepth',
+'js/net',
+'js/net/URLParameter',
+'js/net/URL',
+'js/dom/Stage/loadScript',
+'js/dom/Stage/loadStyle',
+'js/util/Processor',
+'js/dom/Stage/ready',
+'js/dom/Traversal/bfs',
+'js/dom/Traversal/dfs',
+'js/net/Ajax',
+'js/text/Encoder',
+'js/text/Encoder/encodeHTML',
+'js/text/Escaper',
+'js/text/Escaper/escapeQuote',
+'js/text/Escaper/escapeReg',
+'js/text/Formatter',
+'js/text/Template',
+'js/transition/Easing/cos',
+'js/transition/Easing/quadIn',
+'js/transition/Easing/quadInAndOut',
+'js/transition/Easing/quadOut',
+'js/transition/Easing/sin',
+'js/util/EventObject',
+'js/util/IEventDispatcher',
+'js/util/EventDispatcher',
+'js/util/Global/getGlobal',
+'js/util/Namespace',
+];
+
+var unitSet = [
+'js/client/Browser',
+'js/dom/ClassName',
+'js/dom/Cookie',
+'js/dom/Node',
+//'js/dom/Operation',
+'js/dom/Selector',
+'js/dom/Stage',
+'js/dom/Style',
+'js/dom/Traversal',
+'js/dom/Tween',
+'js/net/URL',
+'js/net/URLParameter',
+'js/text/Template',
+'js/text/WordString',
+'js/util/Class',
+'js/util/Namespace',
+'js/util/Shortcut',
+'js/util/Type',
+'js/util/XArray'
+];
+
+function template(item, base) {
+	return '<script type="text/javascript" src="' + (base || '') + item + '.js"><\/script>'
+}
+
+var scripts = [], i;
+for (i = unitSet.length; i--; ) {
+	scripts.unshift(template(unitSet[i]));
+}
+for (i = srcSet.length; i--; ) {
+	scripts.unshift(template(srcSet[i], '../src/'));
+}
+
+document.write(scripts.join(''));
+
+})();
 </script>
 </body>
 </html>
