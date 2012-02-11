@@ -1,6 +1,7 @@
 doc/*
 external/*
 nightly/*
+release/*
 scrap/*
 .project
 test/test.html
