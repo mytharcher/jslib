@@ -368,10 +368,18 @@ if (js.util.Type) {
 	
 		test('js.util.Type.isDocument()', function(){
 			equals(js.util.Type.isDocument(document.body), false, '');
+			equals(js.util.Type.isDocument(document.documentElement), false, '');
+			equals(js.util.Type.isDocument(document.body.parentNode.parentNode), true, '');
 			equals(js.util.Type.isDocument(document.createElement('div')), false, '');
 			equals(js.util.Type.isDocument(document), true, '');
 			equals(js.util.Type.isDocument(document.createDocumentFragment()), false, '');
-			equals(js.util.Type.isDocument(document.getElementById('test-js-util-type-sub').contentWindow.document), true, 'The document in another window(such as iframe, opened window etc.) should be the same type in the current window.');
+			
+			var typeWin = document.getElementById('test-js-util-type-sub').contentWindow;
+			var typeDoc = typeWin.document;
+			typeDoc.write('js.util.Type test');
+			typeDoc.close();
+			
+			equals(js.util.Type.isDocument(typeDoc), true, 'The document in another window(such as iframe, opened window etc.) should be the same type in the current window.');
 		});
 		
 	}
@@ -380,7 +388,13 @@ if (js.util.Type) {
 	
 		test('js.util.Type.isWindow()', function(){
 			equals(js.util.Type.isWindow(window), true, 'The window should be Window type.');
-			equals(js.util.Type.isWindow(document.getElementById('test-js-util-type-sub').contentWindow), true, 'The window in another window(such as iframe, opened window etc.) should be the same type in the current window.');
+			
+			var typeWin = document.getElementById('test-js-util-type-sub').contentWindow;
+			var typeDoc = typeWin.document;
+			typeDoc.write('js.util.Type test');
+			typeDoc.close();
+			
+			equals(js.util.Type.isWindow(typeWin), true, 'The window in another window(such as iframe, opened window etc.) should be the same type in the current window.');
 			//这里需要浏览器允许弹出窗口
 			var win = window.open('about:blank');
 			equals(js.util.Type.isWindow(win), true, 'The window in another window(such as iframe, opened window etc.) should be the same type in the current window.');

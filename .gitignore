@@ -1,12 +1,6 @@
-build/*
-api/*
 doc/*
-example/*
 external/*
-log/*
 nightly/*
-release/*
-res/*
 scrap/*
 .project
 test/test.html
