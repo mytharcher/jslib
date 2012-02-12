@@ -6,13 +6,12 @@
 </head>
 
 <body>
-<p>path: /jslib/test/js/cookie-test/</p>
+<p>path: <script>document.write(location.pathname);</script></p>
 <textarea id="test"></textarea>
-<script type="text/javascript" src="../../../release/elf-0.3.1.js"></script>
 <script type="text/javascript">
 setInterval(function () {
 	document.getElementById('test').value = document.cookie;
-}, 500);
+}, 1000);
 </script>
 </body>
 </html>

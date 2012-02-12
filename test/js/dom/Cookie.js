@@ -28,17 +28,14 @@ if (js.dom.Cookie) {
 		js.dom.Cookie.set('c', 'abc' + specialChars + 'def');
 		ok(document.cookie.indexOf('c=' + encodeURIComponent('abc' + specialChars + 'def')) >= 0, 'When set some specail char "' + specialChars + '", they should be encoded and stored.');
 		
-		var winA = js.dom.Stage.get('path-test-a').contentWindow, winB = js.dom.Stage.get('path-test-b').contentWindow;
-		winA.js.dom.Cookie.set('d=100');
-		equals(winA.js.dom.Cookie.get('d'), '100', 'When set a value to the cookie in a page in different path, it can be set successfully.');
-		equals(js.dom.Cookie.get('c'), 'abc' + specialChars + 'def', 'When set a cookie in a deeper path, the value in lower path should be the orignal one.');
+		var ifA = js.dom.Stage.get('path-test-a'), winA = ifA.contentWindow;
 		
-		js.dom.Cookie.set('c=200', {
-			path: '/elfjs/jslib/test/js/cookie-test/'
+		js.dom.Cookie.set('d=200', {
+			path: location.pathname + ifA.getAttribute('src')
 		});
-		// console.log(winA.document.cookie);
-		// equals(winA.js.dom.Cookie.get('c'), '200', 'When set a cookie to a certain path, the value can be read from that path.');
-		// equals(winB.js.dom.Cookie.get('c'), '200', 'From deeper path can read cookie from lower path.');
+		
+		equals(winA.document.cookie.match('(?:;\s*)?(d=200)(?:\s*;)?')[1], 'd=200', 'When set a cookie to a certain path, the value can be read from that path.');
+		equals(typeof js.dom.Cookie.get('d'), 'undefined', 'When set a cookie to a certain path, the value cannot be read lower path.');
 	});
 	
 	test('js.dom.Cookie.get()', function(){

@@ -109,8 +109,11 @@ js.dom.Drag = {
 	 * @param {Object} option
 	 */
 	start: function (element, option) {
+		
 		var option = option || {},
 			elem = js.dom.Stage.get(element);
+		
+		this.stop(elem);
 		
 		option.id = js.dom.Stage.mark(elem);
 		option.trackerId = js.dom.MouseTracker.start(this.mover(option));

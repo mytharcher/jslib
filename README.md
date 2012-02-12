@@ -1,4 +1,4 @@
-﻿JavaScript Library
+﻿# JavaScript Library
 
 这是一个灵活的JavaScript基础库。
 

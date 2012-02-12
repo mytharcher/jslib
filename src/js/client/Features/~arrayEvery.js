@@ -9,7 +9,7 @@
 
 /**
  * @ignore
- * 修复数组没有some函数
+ * 修复数组没有every函数
  * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/every
  */
 if (!Array.prototype.every) {

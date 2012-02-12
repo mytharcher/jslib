@@ -65,7 +65,7 @@
 js.dom.INodeClassName = js.dom.INodeClassName || js.dom.NodeInterfaceFactory.create({
 	name: 'Class',
 	base: js.dom.ClassName,
-	methods: ['add', 'remove', 'toggle', 'replace', {method: 'has', single: true}]
+	methods: ['add', 'remove', 'toggle', 'replace', {method: 'has', single: true}, {method: 'get', single: true}]
 });
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeClassName);

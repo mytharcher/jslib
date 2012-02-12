@@ -20,7 +20,11 @@ if (js.dom.Traversal) {
 	module('js.dom.Traversal');
 	
 	test('js.dom.Traversal.up()', function(){
-		var Stage = js.dom.Stage, key = js.util.Global.guid('traversal-up'), count = js.dom.Traversal.up('Test_js-dom-Traversal-up', setKey(key)), node = Stage.get('Test_js-dom-Traversal-up'), topNode = document.documentElement;
+		var Stage = js.dom.Stage,
+			key = js.util.Global.guid('traversal-up'),
+			count = js.dom.Traversal.up('Test_js-dom-Traversal-up', setKey(key)),
+			node = Stage.get('Test_js-dom-Traversal-up'),
+			topNode = document.documentElement;
 		for (var i = 0; node && node != topNode; node = node.parentNode) {
 			i++;
 			equals(node.getAttribute(key), '1', 'Every node on the traversal road should be visited once and only once. current: ' + Stage.mark(node));
@@ -36,10 +40,13 @@ if (js.dom.Traversal) {
 	});
 	
 	test('js.dom.Traversal.bfs()', function(){
-		var Stage = js.dom.Stage, key = js.util.Global.guid('traversal-bfs'), count = js.dom.Traversal.bfs('Test_js-dom-Traversal-tree', setKey(key)), nodeSet = Stage.get('Test_js-dom-Traversal-tree').getElementsByTagName('*');
+		var Stage = js.dom.Stage,
+			key = js.util.Global.guid('traversal-bfs'),
+			count = js.dom.Traversal.bfs('Test_js-dom-Traversal-tree', setKey(key)),
+			nodeSet = Stage.get('Test_js-dom-Traversal-tree').getElementsByTagName('*');
 		
 		for (var i = 0, len = nodeSet.length; i < len; i++) {
-			node = nodeSet[i];
+			var node = nodeSet[i];
 			equals(node.getAttribute(key), '1', 'Every node on the traversal road should be visited once and only once. current: ' + Stage.mark(node));
 		}
 		
@@ -49,10 +56,13 @@ if (js.dom.Traversal) {
 	});
 	
 	test('js.dom.Traversal.dfs()', function(){
-		var Stage = js.dom.Stage, key = js.util.Global.guid('traversal-dfs'), count = js.dom.Traversal.dfs('Test_js-dom-Traversal-tree', setKey(key)), nodeSet = Stage.get('Test_js-dom-Traversal-tree').getElementsByTagName('*');
+		var Stage = js.dom.Stage,
+		key = js.util.Global.guid('traversal-dfs'),
+		count = js.dom.Traversal.dfs('Test_js-dom-Traversal-tree', setKey(key)),
+		nodeSet = Stage.get('Test_js-dom-Traversal-tree').getElementsByTagName('*');
 		
 		for (var i = nodeSet.length - 1; i >= 0; i--) {
-			node = nodeSet[i];
+			var node = nodeSet[i];
 			equals(node.getAttribute(key), '1', 'Every node on the traversal road should be visited once and only once. current: ' + Stage.mark(node));
 		}
 		
@@ -62,7 +72,11 @@ if (js.dom.Traversal) {
 	
 	//性能测试
 	test('Search arithmetic performance', function(){
-		var timer, times = 100, fn = setKey(key), key = js.util.Global.guid('traversal-dfs'), nodeSet = js.dom.Stage.get('Test_js-dom-Traversal-tree').getElementsByTagName('*');
+		var timer,
+		times = 100,
+		key = js.util.Global.guid('traversal-dfs'),
+		fn = setKey(key),
+		nodeSet = js.dom.Stage.get('Test_js-dom-Traversal-tree').getElementsByTagName('*');
 		
 		//广度优先遍历（递归）
 		timer = new Date();

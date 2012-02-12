@@ -2,15 +2,62 @@ if (js.util.XArray) {
 
 	module('js.util.XArray');
 	
-	test('new js.util.XArray()', function(){
+	test('XArray instance as Array', function () {
 		var xArr = new js.util.XArray(1, 2, 3);
 		ok(xArr instanceof Array, 'The XArray class is inherited from Array, so the instance of XArray should also be instance of Array');
 		
 		equals(xArr.length, 3, 'When create an XArray instance, the length should be the number of elements inside.');
+		
 		equals(xArr.push(5), 4, 'When push a new element into the XArray, the new length should return.');
 		
 		xArr.pop();
 		equals(xArr.length, 3, 'When use the Array method, it works.');
+		
+		xArr.length = 0;
+		equals(xArr.length, 0, 'When set an XArray\'s length to 0, the length should be 0.');
+		equals(xArr[0], js.util.Global.noop(), 'When set an XArray\'s length to 0, all items should be cleaned.');
+		
+		xArr.push(1, 3, 4);
+		var result = {sum: 0};
+		var array = xArr.forEach(function (item) {
+			this.sum += item;
+		}, result);
+		equals(result.sum, 8, 'The native method forEach() can be invoked normally.');
+		equals(array, xArr, 'The method forEach() should return the instance of XArray for chaining.');
+		
+		array = xArr.filter(function (item) {
+			return item % 2;
+		});
+		equals(array.toString(), '1,3', 'The native method filter() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method filter() should return an instance of XArray for chaining');
+		ok(array != xArr, 'The method filter() should not change the origin one and should return a copy.');
+		
+		array = xArr.map(function (item) {
+			return item * 2;
+		});
+		equals(array.toString(), '2,6,8', 'The native method map() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method map() should return an instance of XArray for chaining');
+		ok(array != xArr, 'The method map() should not change the origin one and should return a copy.');
+		
+		array = xArr.slice(1);
+		equals(array.toString(), '3,4', 'The native method slice() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method slice() should return an instance of XArray for chaining');
+		ok(array != xArr, 'The method slice() should not change the origin one and should return a copy.');
+		
+		array = xArr.sort(function (a, b) {return b - a;});
+		equals(array.toString(), '4,3,1', 'The native method sort() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method sort() should return an instance of XArray for chaining');
+		ok(array == xArr, 'The method sort() would change the origin one but not return a copy.');
+		
+		array = xArr.reverse();
+		equals(array.toString(), '1,3,4', 'The native method reverse() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method reverse() should return an instance of XArray for chaining');
+		ok(array == xArr, 'The method reverse() would change the origin one but not return a copy.');
+		
+		array = xArr.concat([2, 5]);
+		equals(array.toString(), '1,3,4,2,5', 'The native method concat() can be invoked noramlly.');
+		ok(typeof array.distinct == 'function', 'The method concat() should return an instance of XArray for chaining');
+		ok(array != xArr, 'The method concat() would not change the origin one but return a copy.');
 	});
 	
 	test('xArr.indexOf()', function(){

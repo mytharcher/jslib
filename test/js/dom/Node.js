@@ -11,6 +11,8 @@ if (js.dom.Node) {
 		
 		var test = js.dom.Node('#Test');
 		equals(test[0], document.getElementById('Test'), 'Use #id to create a node instance should contain the only element by id.');
+		
+		equals(js.dom.Node(null).length, 0, 'When null passed in, ignore the value and create a empty instance.');
 	});
 	
 	if (js.dom.INodeAttribute) {
@@ -40,6 +42,10 @@ if (js.dom.Node) {
 	if (js.dom.INodeClassName) {
 		test('node.addClass()', function () {
 			
+		});
+		test('node.getClass()', function () {
+			var node = js.dom.Node('#test-js-dom-classname');
+			equal(typeof node.getClass, 'function', 'The extended function should be implemented on any Node instance.');
 		});
 		
 		test('node.removeClass()', function () {
@@ -111,7 +117,7 @@ if (js.dom.Node) {
 		});
 	}
 	
-	if (js.dom.INodeRalation) {
+	if (js.dom.INodeRelation) {
 		test('node.indexOfSiblings()', function () {
 			
 		});
@@ -133,7 +139,8 @@ if (js.dom.Node) {
 		});
 		
 		test('node.parent()', function () {
-			
+			var node = js.dom.Node('#Test_js-dom');
+			equal(node.parent()[0], document.getElementById('Test_js'), 'The method parent() should get the right element.');
 		});
 		
 		test('node.ancestors()', function () {
@@ -171,7 +178,8 @@ if (js.dom.Node) {
 		});
 		
 		test('node.css()', function () {
-			
+			var absPosNode = js.dom.Node('#Test_js-dom-Tween');
+			equals(absPosNode.css('position'), 'absolute', 'When use css(key) can get current style value by the specified key.');
 		});
 	}
 }

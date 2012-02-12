@@ -26,6 +26,8 @@
  * @2011-10-30 by mytharcher
  * 		[m] Abandon the auto-created constructor in newly created class without specifying a own constructor, for being more common as other languages.
  * 		[m] Remove "Super" in newly created sub-class to avoid confusion.
+ * @2012-01-10 by mytharcher
+ * 		[m] Change the type judgement from by the class js.util.Type to native implement by typeof expression, to cut off the dependency circle.
  */
 
 ///import js.util;
@@ -66,7 +68,7 @@ js.util.Class = js.util.Class || {
 		var len = arguments.length,
 			lastIndex = len - 1,
 			deep = arguments[lastIndex],
-			hasDeep = js.util.Type.isBoolean(deep),
+			hasDeep = typeof deep == 'boolean',
 			target;
 		
 		if (lastIndex > 0) {

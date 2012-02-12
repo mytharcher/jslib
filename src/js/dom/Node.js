@@ -38,7 +38,7 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 		
 		switch (Type.of(selector)) {
 			case Type.STRING:
-				queryResult = js.dom.Selector.queryAll(selector, context);
+				queryResult = js.dom.Selector.queryAll(selector, context && (new MyClass(context)).toArray());
 				break;
 			
 			// case Type.HTMLCOLLECTION:
@@ -47,10 +47,11 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 				// break;
 				
 			case Type.ARRAY:
-			case Type.XARRAY:
+			// case Type.XARRAY:
 				queryResult = selector.slice();
 				break;
 			
+			case Type.NULL:
 			case Type.UNDEFINED:
 				break;
 			
@@ -152,7 +153,7 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 	 * @return {Node}
 	 */
 	query: function (selector) {
-		return new this.constructor(selector, this);
+		return new this.constructor(js.dom.Selector.queryAll(selector, this.toArray()));
 	},
 	
 	/**

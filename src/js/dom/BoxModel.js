@@ -12,16 +12,21 @@
 ///import js.dom.Traversal.up;
 
 /**
- * 获取元素的位置
- * @method js.dom.BoxModel.getPosition
- * @static
- * 
- * @param {Element} el
- * @param {Element} refer 相对的元素，如不传入则只计算相对父级节点的位置
- * 
- * @return {Object} 返回包含位置坐标x, y属性的对象
+ * @class js.dom.BoxModel
+ * DOM元素盒子模型类
+ * @singleton
  */
 js.dom.BoxModel = {
+	/**
+	 * 获取元素的位置
+	 * @method js.dom.BoxModel.getPosition
+	 * @static
+	 * 
+	 * @param {Element} el
+	 * @param {Element} refer 相对的元素，如不传入则只计算相对父级节点的位置
+	 * 
+	 * @return {Object} 返回包含位置坐标x, y属性的对象
+	 */
 	getPosition: function (el, refer) {
 		var pos = {x: 0, y: 0};
 		
@@ -54,12 +59,15 @@ js.dom.BoxModel = {
 				pos.y += (parseInt(document.body.currentStyle.marginTop) || 0) * 2;
 			}
 		}
+		pos.left = pos.x;
+		pos.top = pos.y;
+		
 		return pos;
 	},
 	
 	/**
 	 * 向上遍历获取一个元素的绝对可见状态
-	 * @method js.dom.Stage.isDisplaying
+	 * @method js.dom.BoxModel.isDisplaying
 	 * @static
 	 * 
 	 * @param {Element} element 要获取的元素

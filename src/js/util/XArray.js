@@ -10,13 +10,17 @@
  * 		[m] Move all seperated method files in the namespace js.util.XArray here.
  * @2011-08-29 by mytharcher
  * 		[m] Fix bug in method "distinct" for some duplicate stamp use.
+ * @2012-01-08 by mytharcher
+ * 		[a] Add methods to override native array methods for returning XArray instance after invoked.
  */
 
 ///import js.util;
 ///import js.util.Class;
 ///import js.util.Global.stamp;
+///import js.client.Features.~arrayForEach;
+///import js.client.Features.~arrayFilter;
+///import js.client.Features.~arrayMap;
 
-if (!js.util.XArray) {
 
 /**
  * @class js.util.XArray
@@ -27,15 +31,20 @@ if (!js.util.XArray) {
  * @method constructor
  * @param {Any...} arguments
  */
-js.util.XArray = function(){
-	var arr = [];
-	arr.push.apply(arr, [].slice.call(arguments, 0));
-	js.util.Class.copy(this.constructor.prototype, arr);
-	return arr;
-};
-
-js.util.Class.copy({
-	constructor: js.util.XArray,
+js.util.XArray = js.util.XArray || js.util.Class.create({
+	constructor: function () {
+		var arr = [];
+		arr.push.apply(arr, [].slice.call(arguments, 0));
+		
+		// 防止IE下使用for in XArray.prototype取不到扩展的方法名（slice等）
+		var keys = js.util.XArray.__extends__.split(' ');
+		for (var i = keys.length - 1; i >= 0; i--) {
+			var item = keys[i];
+			arr[item] = js.util.XArray.prototype[item];
+		}
+		
+		return arr;
+	},
 	
 	/**
 	 * 去重的实例方法
@@ -45,8 +54,8 @@ js.util.Class.copy({
 	 * @see js.util.XArray.distinct
 	 */
 	distinct: function () {
-		var myClass = this.constructor;
-		return myClass.toXArray(myClass.distinct.call(myClass, this));
+		var myClass = js.util.XArray;
+		return myClass.toXArray(myClass.distinct(this));
 	},
 	
 	/**
@@ -81,16 +90,56 @@ js.util.Class.copy({
 	},
 	
 	/**
+	 * 通过过滤函数过滤特定项组成新数组返回
+	 * @param {Function} fn 迭代器
+	 * @param {Object} scope (optional)作用域
+	 * 
+	 * @return {XArray} 返回过滤结果新数组
+	 */
+	
+	/**
+	 * 遍历数组
+	 * @param {Function} fn 迭代器
+	 * @param {Object} scope (optional)作用域
+	 * 
+	 * @return {XArray} 返回自身实例以供链式调用
+	 */
+	forEach: function () {
+		[].forEach.apply(this, arguments);
+		return this;
+	},
+	
+	/**
+	 * 通过映射函数计算出新数组
+	 * @param {Function} fn 映射函数
+	 * @param {Object} scope (optional)作用域
+	 * 
+	 * @return {XArray} 返回映射结果新数组
+	 */
+	
+	/**
 	 * 转化为普通数组
 	 * 
 	 * @return {Array}
 	 */
 	toArray: function(){
-		return this.slice(0);
+		return [].slice.call(this, 0);
 	}
-}, js.util.XArray.prototype);
+}, Array);
+
+['concat', 'filter', 'map', 'slice'].forEach(function (item) {
+	js.util.XArray.prototype[item] = function () {
+		return js.util.XArray.toXArray([][item].apply(this, arguments));
+	};
+});
 
 js.util.Class.copy({
+	/**
+	 * @ignore
+	 * @private
+	 */
+	__extends__: 'concat distinct indexOf forEach filter map slice toArray',
+	
 	/**
 	 * 数组去重
 	 * @method js.util.XArray.distinct
@@ -173,8 +222,8 @@ js.util.Class.copy({
 		} else if (arrayLike instanceof Array || arrayLike.callee) {//数组或参数对象直接调用数组方法生成副本
 			ret = [].slice.call(arrayLike, 0);
 		} else {//其他如HTMLCollection或childNodes遍历复制
-			for (var i = 0; i < length && typeof arrayLike[i] != 'undefined'; ) {
-				ret.push(arrayLike[i++]);
+			for (var i = 0; i < length; i++) {
+				ret.push(arrayLike[i]);
 			}
 		}
 		return ret;
@@ -195,5 +244,3 @@ js.util.Class.copy({
 		return ret;
 	}
 }, js.util.XArray);
-
-}

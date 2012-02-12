@@ -17,7 +17,6 @@
 
 ///import js.util.Class;
 ///import js.util.Global.noop;
-///import js.client.Features.~json;
 ///import js.net;
 ///import js.net.URL;
 ///import js.net.URLParameter;
@@ -79,8 +78,8 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	constructor: function (args) {
 		var option = this.constructor.option;
 		
+		js.util.Class.mix(this, args);
 		js.util.Class.mix(this, option);
-		js.util.Class.mix(this, args, Object.keys(option));
 		
 		this.method = this.method.toUpperCase();
 		
@@ -102,16 +101,16 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * 发送请求
 	 * @param {Object/URLParameter} 加载时的参数
 	 */
-	load: function (data) {
+	request: function (data) {
 		var myClass = this.constructor;
 		
 		var request = this.httpRequest;
 		
 		if (request.readyState && request.readyState != myClass.STATE_COMPLETE) {
-			if (!this.blockDuplicate && this.onduplicate(request) !== false) {
-				this.abort();
-			} else {
+			if (this.blockDuplicate || this.onduplicate(request) === false) {
 				return;
+			} else {
+				this.abort();
 			}
 		}
 		
@@ -233,16 +232,16 @@ js.util.Class.copy({
 	
 	/**
 	 * 加载一个Ajax请求
-	 * @method js.net.Ajax.load
+	 * @method js.net.Ajax.request
 	 * @static
 	 * 
 	 * @param {Object} option
 	 * 
 	 * @return {XMLHttpRequest}
 	 */
-	load: function (option) {
-		var ajax = new this(option);
-		ajax.load(option.data);
+	request: function (option) {
+		var ajax = new js.net.Ajax(option);
+		ajax.request(option.data);
 		return ajax.httpRequest;
 	},
 	
@@ -256,8 +255,8 @@ js.util.Class.copy({
 	 * @return {XMLHttpRequest}
 	 */
 	get: function (option) {
-		option.method = this.HTTP_GET;
-		return this.load(option);
+		option.method = js.net.Ajax.HTTP_GET;
+		return js.net.Ajax.request(option);
 	},
 	
 	/**
@@ -270,10 +269,21 @@ js.util.Class.copy({
 	 * @return {XMLHttpRequest}
 	 */
 	post: function (option) {
-		option.method = this.HTTP_POST;
-		return this.load(option);
+		option.method = js.net.Ajax.HTTP_POST;
+		return js.net.Ajax.request(option);
 	}
 }, js.net.Ajax);
+
+/**
+ * 加载一个Ajax请求
+ * @method js.net.Ajax.load
+ * @static
+ * 
+ * @param {Object} option
+ * 
+ * @return {XMLHttpRequest}
+ */
+js.net.Ajax.load = js.net.Ajax.request;
 
 /**
  * 默认配置参数
@@ -299,24 +309,25 @@ js.net.Ajax.option = {
 	onduplicate: js.util.Global.noop,
 	
 	onreadystatechange: function(){
-		var me = this.constructor;
-		var request = this.httpRequest;
-		if (request.readyState == me.STATE_COMPLETE) {
+		var me = this;
+		var myClass = me.constructor;
+		var request = me.httpRequest;
+		if (request.readyState == myClass.STATE_COMPLETE) {
 		
 			if (request.status >= 200 && request.status < 300) {
-				if (this.onsuccess) {
+				if (me.onsuccess) {
 					var response = request.responseText;
-					switch (this.responseType) {
-						case me.DATA_TYPE_XML:
+					switch (me.responseType) {
+						case myClass.DATA_TYPE_XML:
 							response = request.responseXML;
 							break;
 							
-						case me.DATA_TYPE_JSON:
+						case myClass.DATA_TYPE_JSON:
 							var json = response;
 							try {
-								json = JSON.parse(response);
+								json = (new Function('return ' + response + ';'))();
 							} catch (ex) {
-								this.onjsonerror(ex, response);
+								me.onjsonerror(ex, response);
 							} finally {
 								if (typeof json == 'object') {
 									response = json;
@@ -327,14 +338,14 @@ js.net.Ajax.option = {
 						default:
 							break;
 					}
-					this.onsuccess(response, request);
+					me.onsuccess(response, request);
 				}
-			} else if (this.onfailure) {
-				this.onfailure(request);
+			} else if (me.onfailure) {
+				me.onfailure(request);
 			}
 			
-			if (this.oncomplete) {
-				this.oncomplete(request);
+			if (me.oncomplete) {
+				me.oncomplete(request);
 			}
 		}
 	}
