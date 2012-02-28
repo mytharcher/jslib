@@ -218,7 +218,7 @@ js.util.Class.copy({
 		loop: 1
 		
 		/**
-		 * @cfg {Function} onstart 形变启动时调用的外部接口。默认：undefined。
+		 * @cfg {Function} onstart 形变启动时调用的外部接口。如果接口函数返回结果是false，则阻止后续的动画启动。默认：undefined。
 		 */
 		/**
 		 * @cfg {Function} onfirstframe 进入第一帧调用的外部接口，与onstart不同的是会经过第一次时间间隔时才调用。默认：undefined。
@@ -290,13 +290,12 @@ js.util.Class.copy({
 	 * @return {Number} interval，返回定时执行的句柄，可供停止渐变调用
 	 */
 	start: function (option) {
-		var option = this.prepare(option),
-			run = window.setInterval(this.run.bind(this), 1 / option.fps * 1000, option);
-		
-		this.running[run] = true;
-		
-		if (typeof option.onstart == 'function') {
-			option.onstart();
+		var opt, run;
+		if (typeof option.onstart != 'function' || (run = option.onstart()) !== false) {
+			opt = this.prepare(option);
+			run = window.setInterval(this.run.bind(this), 1 / option.fps * 1000, opt);
+			
+			this.running[run] = true;
 		}
 		
 		return run;
