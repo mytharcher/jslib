@@ -182,4 +182,13 @@ if (js.dom.Node) {
 			equals(absPosNode.css('position'), 'absolute', 'When use css(key) can get current style value by the specified key.');
 		});
 	}
+	
+	if (js.dom.INodeTween) {
+		test('node.tween()', function () {
+			var node = js.dom.Node('#Test_js-dom-Tween');
+			equals(typeof node.tween, 'function', 'Any instance of Node should contain tween() method.');
+			
+			equals(node.tween, js.dom.INodeTween.tween, 'The tween() method should be the one defined in INodeTween interface.');
+		});
+	}
 }
