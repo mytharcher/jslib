@@ -106,7 +106,7 @@ js.util.Class.copy({
 			}
 		}
 		
-		option.onEnterFrame = Tween.createOnEnterFrameProcessor(option);
+		option.onenterframe = Tween.createOnEnterFrameProcessor(option);
 		
 		return option;
 	},
@@ -116,7 +116,7 @@ js.util.Class.copy({
 	 * @param {Object} option
 	 */
 	createOnEnterFrameProcessor: function (option) {
-		var temp = option.onEnterFrame;
+		var temp = option.onenterframe;
 		return function (spendTime) {
 			var Style = js.dom.Style,
 				Tween = js.dom.Tween,
