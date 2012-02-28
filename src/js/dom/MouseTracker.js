@@ -65,7 +65,7 @@ js.dom.MouseTracker = (function () {
 			var dragging = js.dom.MouseTracker.dragging;
 			for (var i in dragging) {
 				var option = dragging[i];
-				option.onDrag && option.onDrag(ev);
+				option.ondrag && option.ondrag(ev);
 			}
 		},
 		
@@ -73,18 +73,18 @@ js.dom.MouseTracker = (function () {
 		 * 启动追踪
 		 * @method js.dom.MouseTracker.start
 		 * 
-		 * @param {Function} onDrag
+		 * @param {Function} ondrag 检测到拖动时要做的处理
 		 * 
 		 * @return {String} 返回当前追踪的id，用于停止追踪
 		 */
-		start: function(onDrag){
+		start: function(ondrag){
 			var id = js.util.Global.guid();
 			if (this.noDragging()) {
 				js.dom.Event.add(document, 'mousemove', this.move);
 			}
 			
 			this.dragging[id] = {
-				onDrag: onDrag,
+				ondrag: ondrag,
 				startX: this.x,
 				startY: this.y
 			};
