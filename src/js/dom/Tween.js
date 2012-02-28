@@ -75,7 +75,7 @@ js.util.Class.copy({
 	prepare: function (option) {
 		var Tween = js.dom.Tween,
 			Style = js.dom.Style,
-			option = js.transition.Timeline.prepare(option);
+			option = js.transition.Timeline.prepare.call(Tween, option);
 		
 		//预处理属性列表
 		for (var prop in option.property) {
@@ -83,7 +83,7 @@ js.util.Class.copy({
 			
 			//默认无缓动，即线性运动
 			if (typeof p.ease != 'function') {
-				p.ease = Tween.config.ease;
+				p.ease = Tween.Config.ease;
 			}
 			
 			//默认没有单位
@@ -134,7 +134,7 @@ js.util.Class.copy({
 	}
 }, js.dom.Tween);
 
-js.dom.Tween.config = js.util.Class.mix({
+js.dom.Tween.Config = js.util.Class.mix({
 	duration: 500,
 	ease: js.transition.Easing.linear
-}, js.transition.Timeline.config);
+}, js.transition.Timeline.Config);

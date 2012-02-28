@@ -41,46 +41,32 @@ js.dom.INodeTween = js.dom.INodeTween || {
 		if (!this[transStamp]) {
 			this[transStamp] = {};
 		}
-		if (!this._transformStartIterator) {
-			this._transformStartIterator = this._getTransformStartIterator();
-		}
-		this.forEach(this._transformStartIterator);
-		return this;
-	},
-	/**
-	 * @private
-	 */
-	_getTransformStartIterator: function (options) {
-		var me = this;
-		return function (element) {
+		
+		this.forEach(function (element) {
 			var transStamp = js.util.Global._STAMP + '_transformer';
-			var transSet = me[transStamp];
-			transSet[js.dom.Stage.mark(element)] = js.dom.Tween.start(js.util.Class.mix({
+			var transSet = this[transStamp];
+			var marker = js.dom.Stage.mark(element);
+			if (!transSet[marker]) {
+				transSet[marker] = [];
+			}
+			transSet[marker].push(js.dom.Tween.start(js.util.Class.mix({
 				object: element
-			}, options));
-		};
+			}, options)));
+		});
+		
+		return this;
 	},
 	
 	rest: function () {
-		if (!this._transformStopIterator) {
-			this._transformStopIterator = this._getTransformStopIterator();
-		}
-		this.forEach(this._transformStartIterator);
+		this.forEach(function (element) {
+			var transStamp = js.util.Global._STAMP + '_transformer';
+			var transSet = this[transStamp];
+			var marker = js.dom.Stage.mark(element) || [];
+			transSet[marker].forEach(js.dom.Tween.stop);
+		});
+		
 		return this;
 	},
-	/**
-	 * @private
-	 */
-	_getTransformStopIterator: function () {
-		var me = this;
-		return function (element) {
-			var transStamp = js.util.Global._STAMP + '_transformer';
-			var transSet = me[transStamp];
-			var marker = js.dom.Stage.mark(element);
-			js.dom.Tween.stop(transSet[marker]);
-			delete transSet[marker];
-		};
-	}
 };
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeTween);

@@ -23,11 +23,11 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
 	 * 构造函数
 	 * @param {Object} option 参数表见Timeline.start
 	 */
-	constructor: function (config) {
+	constructor: function (options) {
 		var Class = js.util.Class;
 		
-		Class.mix(this, config);
-		Class.mix(this, this.constructor.config);
+		Class.mix(this, options);
+		Class.mix(this, this.constructoConfigig);
 		
 		//定时执行句柄
 		this.interval = null;
@@ -188,10 +188,10 @@ js.util.Class.copy({
 	
 	/**
 	 * @ignore
-	 * @property js.transition.Timeline.config 默认配置参数
+	 * @property js.transition.Timeline.Config 默认配置参数
 	 * @type {Object}
 	 */
-	config: {
+	Config: {
 		/**
 		 * @cfg {Number} fps 每秒运行的帧数，默认：50。
 		 */
@@ -262,7 +262,7 @@ js.util.Class.copy({
 	 */
 	prepare: function (option) {
 		var Class = js.util.Class;
-		Class.mix(option, this.config);
+		Class.mix(option, this.Config);
 		Class.mix(option, {
 			//记录即将开始的定时器的id
 			id: this.getNextTimer(),
@@ -307,7 +307,7 @@ js.util.Class.copy({
 	 * @method js.transition.Timeline.run
 	 * @private
 	 * 
-	 * @param {Object} option @see js.transition.Timeline.config
+	 * @param {Object} option @see js.transition.Timeline.Config
 	 * 
 	 * @return {Number}
 	 */
