@@ -21,22 +21,15 @@
 /**
  * @class js.dom.Node
  */
-
-/**
- * 开始动画
- * @method transform
- * @param {Object} options 动画参数
- * 
- * @return {js.dom.Node} 返回自身引用以供链式调用
- */
-/**
- * 停止动画
- * @method rest
- * 
- * @return {js.dom.Node} 返回自身引用以供链式调用
- */
 js.dom.INodeTween = js.dom.INodeTween || {
-	transform: function (options) {
+	/**
+	 * 开始动画
+	 * @method tween
+	 * @param {Object} options 动画参数
+	 * 
+	 * @return {js.dom.Node} 返回自身引用以供链式调用
+	 */
+	tween: function (options) {
 		var transStamp = js.util.Global._STAMP + '_transformer';
 		if (!this[transStamp]) {
 			this[transStamp] = {};
@@ -57,6 +50,12 @@ js.dom.INodeTween = js.dom.INodeTween || {
 		return this;
 	},
 	
+	/**
+	 * 停止动画
+	 * @method rest
+	 * 
+	 * @return {js.dom.Node} 返回自身引用以供链式调用
+	 */
 	rest: function () {
 		this.forEach(function (element) {
 			var transStamp = js.util.Global._STAMP + '_transformer';
