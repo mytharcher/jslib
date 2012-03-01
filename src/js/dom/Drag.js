@@ -71,7 +71,7 @@ js.dom.Drag = {
 			elem.style.left = cur.x + 'px';
 			elem.style.top = cur.y + 'px';
 			
-			option.onDrag && option.onDrag(x, y);
+			option.ondrag && option.ondrag(x, y);
 			
 			ev.preventDefault();
 		};

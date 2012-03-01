@@ -23,16 +23,19 @@ if (js.dom.Tween) {
 					ease: js.transition.Easing.quadIn
 				}
 			},
-			onFirstFrame: function(){
+			onstart: function () {
+				ok(1, 'onstart event could be fired.');
+			},
+			onfirstframe: function(){
 				//console && console.log('first');
 				equals(js.dom.Style.get('Test_js-dom-Tween', 'top'), '0px', 'When a Tween start, the property will be set to the value of "from" if it has "from".');
 			},
-			onEnterFrame: function(percent){
+			onenterframe: function(percent){
 				//console && console.log(percent);
 				var divY = js.dom.Style.get('Test_js-dom-Tween', 'top');
 				//ok(0 < percent && percent < 1 && '0px' < divY && divY < '200px' || 1, '当一个单调递增形变补间在运动时，属性值会被设置在开始值与结束值之间。');
 			},
-			onComplete: function(){
+			oncomplete: function(){
 				//console && console.log('complete.');
 				start();
 				equals(js.dom.Style.get('Test_js-dom-Tween', 'top'), '200px', 'When a Tween completed, the property will be set to the value of "to".');

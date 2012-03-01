@@ -23,11 +23,11 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
 	 * 构造函数
 	 * @param {Object} option 参数表见Timeline.start
 	 */
-	constructor: function (config) {
+	constructor: function (options) {
 		var Class = js.util.Class;
 		
-		Class.mix(this, config);
-		Class.mix(this, this.constructor.config);
+		Class.mix(this, options);
+		Class.mix(this, this.constructoConfigig);
 		
 		//定时执行句柄
 		this.interval = null;
@@ -46,20 +46,20 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
 		 * @ignore
 		 * @param {Number} percent
 		 */
-		this._onEnterFrame = function (percent) {
+		this._onenterframe = function (percent) {
 	//		Debug.out(me.object.className + ':' + me.interval + '>' + percent);
 			me.percent = percent;
-			me.onEnterFrame && me.onEnterFrame(percent);
+			me.onenterframe && me.onenterframe(percent);
 		};
 		
 		/**
 		 * @ignore
 		 */
-		this._onComplete = function () {
+		this._oncomplete = function () {
 	//		Debug.out(me.object.className + ':Complete');
 			me.percent = 1;
 			me.running = false;
-			me.onComplete && me.onComplete();
+			me.oncomplete && me.oncomplete();
 		};
 	},
 	
@@ -94,10 +94,10 @@ js.transition.Timeline = js.transition.Timeline || js.util.Class.create({
 			offset: this.offset,
 			direction: this.direction,
 			loop: this.loop,
-			onStart: this.onStart,
-			onFirstFrame: this.onFirstFrame,
-			onEnterFrame: this._onEnterFrame,
-			onComplete: this._onComplete
+			onstart: this.onstart,
+			onfirstframe: this.onfirstframe,
+			onenterframe: this._onenterframe,
+			oncomplete: this._oncomplete
 		});
 	},
 	
@@ -188,10 +188,10 @@ js.util.Class.copy({
 	
 	/**
 	 * @ignore
-	 * @property js.transition.Timeline.config 默认配置参数
+	 * @property js.transition.Timeline.Config 默认配置参数
 	 * @type {Object}
 	 */
-	config: {
+	Config: {
 		/**
 		 * @cfg {Number} fps 每秒运行的帧数，默认：50。
 		 */
@@ -218,16 +218,16 @@ js.util.Class.copy({
 		loop: 1
 		
 		/**
-		 * @cfg {Function} onStart 形变启动时调用的外部接口。默认：undefined。
+		 * @cfg {Function} onstart 形变启动时调用的外部接口。如果接口函数返回结果是false，则阻止后续的动画启动。默认：undefined。
 		 */
 		/**
-		 * @cfg {Function} onFirstFrame 进入第一帧调用的外部接口，与onStart不同的是会经过第一次时间间隔时才调用。默认：undefined。
+		 * @cfg {Function} onfirstframe 进入第一帧调用的外部接口，与onstart不同的是会经过第一次时间间隔时才调用。默认：undefined。
 		 */
 		/**
-		 * @cfg {Function} onEnterFrame 每帧调用的外部接口。默认：undefined。
+		 * @cfg {Function} onenterframe 每帧调用的外部接口。默认：undefined。
 		 */
 		/**
-		 * @cfg {Function} onComplete 变化完成时调用的外部接口。默认：undefined。
+		 * @cfg {Function} oncomplete 变化完成时调用的外部接口。默认：undefined。
 		 */
 	},
 	
@@ -262,7 +262,7 @@ js.util.Class.copy({
 	 */
 	prepare: function (option) {
 		var Class = js.util.Class;
-		Class.mix(option, this.config);
+		Class.mix(option, this.Config);
 		Class.mix(option, {
 			//记录即将开始的定时器的id
 			id: this.getNextTimer(),
@@ -290,13 +290,12 @@ js.util.Class.copy({
 	 * @return {Number} interval，返回定时执行的句柄，可供停止渐变调用
 	 */
 	start: function (option) {
-		var option = this.prepare(option),
-			run = window.setInterval(this.run.bind(this), 1 / option.fps * 1000, option);
-		
-		this.running[run] = true;
-		
-		if (typeof option.onStart == 'function') {
-			option.onStart();
+		var opt, run;
+		if (typeof option.onstart != 'function' || (run = option.onstart()) !== false) {
+			opt = this.prepare(option);
+			run = window.setInterval(this.run.bind(this), 1 / option.fps * 1000, opt);
+			
+			this.running[run] = true;
 		}
 		
 		return run;
@@ -307,30 +306,30 @@ js.util.Class.copy({
 	 * @method js.transition.Timeline.run
 	 * @private
 	 * 
-	 * @param {Object} option @see js.transition.Timeline.config
+	 * @param {Object} option @see js.transition.Timeline.Config
 	 * 
 	 * @return {Number}
 	 */
 	run: function (option) {
 		option.spend = (Date.now() - option.startTime + option.offset) * option.speed;
 		
-		if (!option.frame++ && typeof option.onFirstFrame == 'function') {
-			option.onFirstFrame();
+		if (!option.frame++ && typeof option.onfirstframe == 'function') {
+			option.onfirstframe();
 		}
 		
 		if (option.spend < option.period) {
-			if (typeof option.onEnterFrame == 'function') {
-				option.onEnterFrame(option.spend);
+			if (typeof option.onenterframe == 'function') {
+				option.onenterframe(option.spend);
 			}
 		} else {
 			this.stop(option.id);
 			
-			if (typeof option.onEnterFrame == 'function') {
-				option.onEnterFrame(option.period);
+			if (typeof option.onenterframe == 'function') {
+				option.onenterframe(option.period);
 			}
 			
-			if (typeof option.onComplete == 'function') {
-				option.onComplete();
+			if (typeof option.oncomplete == 'function') {
+				option.oncomplete();
 			}
 		}
 	},
@@ -341,14 +340,14 @@ js.util.Class.copy({
 	 * @static
 	 * 
 	 * @param {Array} queue 由补间参数option组成的数组
-	 * @param {Function} onComplete 所有动画结束时的回调函数
+	 * @param {Function} oncomplete 所有动画结束时的回调函数
 	 */
-	order: function (queue, onComplete) {
+	order: function (queue, oncomplete) {
 		var i = queue.length - 1, me = this;
-		queue[i].onComplete = onComplete;
+		queue[i].oncomplete = oncomplete;
 		for (i--; i >= 0; i--) {
 			queue[i].next = queue[i + 1];
-			queue[i].onComplete = function(){
+			queue[i].oncomplete = function(){
 				me.start(this.next);
 			};
 		}

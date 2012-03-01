@@ -8,6 +8,7 @@
  */
 
 ///import js.util.Class;
+///import js.util.Global._STAMP;
 ///import js.dom;
 ///import js.dom.Node;
 ///import js.dom.Tween;
@@ -21,65 +22,50 @@
 /**
  * @class js.dom.Node
  */
-
-/**
- * 开始动画
- * @method transform
- * @param {Object} options 动画参数
- * 
- * @return {js.dom.Node} 返回自身引用以供链式调用
- */
-/**
- * 停止动画
- * @method rest
- * 
- * @return {js.dom.Node} 返回自身引用以供链式调用
- */
 js.dom.INodeTween = js.dom.INodeTween || {
-	transform: function (options) {
+	/**
+	 * 开始动画
+	 * @method tween
+	 * @param {Object} options 动画参数
+	 * 
+	 * @return {js.dom.Node} 返回自身引用以供链式调用
+	 */
+	tween: function (options) {
 		var transStamp = js.util.Global._STAMP + '_transformer';
 		if (!this[transStamp]) {
 			this[transStamp] = {};
 		}
-		if (!this._transformStartIterator) {
-			this._transformStartIterator = this._getTransformStartIterator();
-		}
-		this.forEach(this._transformStartIterator);
-		return this;
-	},
-	/**
-	 * @private
-	 */
-	_getTransformStartIterator: function (options) {
-		var me = this;
-		return function (element) {
+		
+		this.forEach(function (element) {
 			var transStamp = js.util.Global._STAMP + '_transformer';
-			var transSet = me[transStamp];
-			transSet[js.dom.Stage.mark(element)] = js.dom.Tween.start(js.util.Class.mix({
+			var transSet = this[transStamp];
+			var marker = js.dom.Stage.mark(element);
+			if (!transSet[marker]) {
+				transSet[marker] = [];
+			}
+			transSet[marker].push(js.dom.Tween.start(js.util.Class.mix({
 				object: element
-			}, options));
-		};
+			}, options)));
+		});
+		
+		return this;
 	},
 	
-	rest: function () {
-		if (!this._transformStopIterator) {
-			this._transformStopIterator = this._getTransformStopIterator();
-		}
-		this.forEach(this._transformStartIterator);
-		return this;
-	},
 	/**
-	 * @private
+	 * 停止动画
+	 * @method rest
+	 * 
+	 * @return {js.dom.Node} 返回自身引用以供链式调用
 	 */
-	_getTransformStopIterator: function () {
-		var me = this;
-		return function (element) {
+	rest: function () {
+		this.forEach(function (element) {
 			var transStamp = js.util.Global._STAMP + '_transformer';
-			var transSet = me[transStamp];
-			var marker = js.dom.Stage.mark(element);
-			js.dom.Tween.stop(transSet[marker]);
-			delete transSet[marker];
-		};
+			var transSet = this[transStamp];
+			var marker = js.dom.Stage.mark(element) || [];
+			transSet[marker].forEach(js.dom.Tween.stop);
+		});
+		
+		return this;
 	}
 };
 
