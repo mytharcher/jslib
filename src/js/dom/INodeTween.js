@@ -8,6 +8,7 @@
  */
 
 ///import js.util.Class;
+///import js.util.Global._STAMP;
 ///import js.dom;
 ///import js.dom.Node;
 ///import js.dom.Tween;
@@ -65,7 +66,7 @@ js.dom.INodeTween = js.dom.INodeTween || {
 		});
 		
 		return this;
-	},
+	}
 };
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeTween);
