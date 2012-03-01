@@ -23,6 +23,9 @@ if (js.dom.Tween) {
 					ease: js.transition.Easing.quadIn
 				}
 			},
+			onstart: function () {
+				ok(1, 'onstart event could be fired.');
+			},
 			onfirstframe: function(){
 				//console && console.log('first');
 				equals(js.dom.Style.get('Test_js-dom-Tween', 'top'), '0px', 'When a Tween start, the property will be set to the value of "from" if it has "from".');
