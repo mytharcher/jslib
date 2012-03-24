@@ -20,7 +20,7 @@
  * @static
  * 
  * @param {String} url 脚本的URL地址
- * @param {Object} option 其他选项：noCache，是否缓存，默认false；onLoad，加载完成的回调函数；
+ * @param {Object} option 其他选项：noCache，是否缓存，默认false；onload，加载完成的回调函数；
  */
 js.dom.Stage.loadScript = function (url, option) {
 	var url = new js.net.URL(url);
@@ -32,7 +32,7 @@ js.dom.Stage.loadScript = function (url, option) {
 	
 	script[js.client.Browser.IE ? 'onreadystatechange' : 'onload'] = function (ev) {
 		if (js.client.Browser.IE && this.readyState == 'loaded' || !js.client.Browser.IE) {
-			option.onLoad && option.onLoad(this);
+			option.onload && option.onload(this);
 			this.onreadystatechange = this.onload = null;
 		}
 	}
