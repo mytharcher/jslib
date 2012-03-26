@@ -24,7 +24,7 @@ js.dom.Event.fix = function (ev) {
 
 	ev.target = ev.srcElement = ev.target || ev.srcElement;
 	ev.keyCode = ev.which || ev.keyCode;
-	ev.RIGHT_CLICK = ev.which == 3 || ev.button == 2;
+	ev.rightClick = ev.which == 3 || ev.button == 2;
 	
 	//可在处理函数内调用e.preventDefault()来阻止浏览器默认事件
 	!ev.preventDefault && (ev.preventDefault = js.dom.Event.Handlers.preventDefault.bind(ev));
