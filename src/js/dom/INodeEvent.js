@@ -12,7 +12,9 @@
 ///import js.util.Class;
 ///import js.dom;
 ///import js.dom.Node;
-///import js.dom.Event;
+///import js.dom.Event.add;
+///import js.dom.Event.remove;
+///import js.dom.Event.once;
 ///import js.dom.NodeInterfaceFactory;
 
 /*
@@ -44,9 +46,12 @@
  * @return {Node} 返回当前集合，以供链式调用
  */
 js.dom.INodeEvent = js.dom.INodeEvent || js.dom.NodeInterfaceFactory.create({
-	name: 'EventListener',
-	base: js.dom.Event,
-	methods: [{method: 'add', alias: 'on'}, {method: 'remove', alias: 'un'}]
+	base: {
+		addEventListener: js.dom.Event.add,
+		removeEventListener: js.dom.Event.remove,
+		once: js.dom.Event.once
+	},
+	methods: [{method: 'add', alias: 'on'}, {method: 'remove', alias: 'un'}, 'once']
 });
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeEvent);
