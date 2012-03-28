@@ -51,7 +51,7 @@ js.dom.INodeEvent = js.dom.INodeEvent || js.dom.NodeInterfaceFactory.create({
 		removeEventListener: js.dom.Event.remove,
 		once: js.dom.Event.once
 	},
-	methods: [{method: 'add', alias: 'on'}, {method: 'remove', alias: 'un'}, 'once']
+	methods: [{method: 'addEventListener', alias: 'on'}, {method: 'removeEventListener', alias: 'un'}, 'once']
 });
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeEvent);
