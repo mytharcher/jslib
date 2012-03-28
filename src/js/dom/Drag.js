@@ -46,35 +46,36 @@ js.dom.Drag = {
 	
 	/**
 	 * @private
-	 * @param {Object} option
+	 * [scope at drag option]
+	 * @param {String} id
 	 */
-	mover: function (option) {
-		return function (ev) {
-			var elem = js.dom.Stage.get(option.id),
-				x = ev.clientX,
-				y = ev.clientY,
-				Drag = js.dom.Drag;
+	mover: function (ev) {
+		var Drag = js.dom.Drag,
+			option = this,
+			id = option.id,
+			elem = js.dom.Stage.get(id),
+			x = ev.clientX,
+			y = ev.clientY;
+		
+		if (typeof option.originalPosition == 'undefined') {
+			option.originalPosition = elem.style.position || '';
+			elem.style.position = 'absolute';
 			
-			if (typeof option.originalPosition == 'undefined') {
-				option.originalPosition = elem.style.position || '';
-				elem.style.position = 'absolute';
-				
-				var pos = js.dom.BoxModel.getPosition(elem);
-				
-				
-				option.offsetX = (option.startX = this.startX) - pos.x;
-				option.offsetY = (option.startY = this.startY) - pos.y;
-			}
+			var pos = js.dom.BoxModel.getPosition(elem);
 			
-			var cur = option.restrict ? Drag.restrict(x - option.offsetX, y - option.offsetY, option.restrict)
-				: {x: x - option.offsetX, y: y - option.offsetY};
-			elem.style.left = cur.x + 'px';
-			elem.style.top = cur.y + 'px';
 			
-			option.ondrag && option.ondrag(x, y);
-			
-			ev.preventDefault();
-		};
+			option.offsetX = (option.startX = x) - pos.x;
+			option.offsetY = (option.startY = y) - pos.y;
+		}
+		
+		var cur = option.restrict ? Drag.restrict(x - option.offsetX, y - option.offsetY, option.restrict)
+			: {x: x - option.offsetX, y: y - option.offsetY};
+		elem.style.left = cur.x + 'px';
+		elem.style.top = cur.y + 'px';
+		
+		option.ondrag && option.ondrag(x, y);
+		
+		ev.preventDefault();
 	},
 	
 	/**
@@ -115,9 +116,9 @@ js.dom.Drag = {
 		
 		this.stop(elem);
 		
-		option.id = js.dom.Stage.mark(elem);
-		option.trackerId = js.dom.MouseTracker.start(this.mover(option));
-		this.dragging[option.id] = option;
+		var id = option.id = js.dom.Stage.mark(elem);
+		this.dragging[id] = option;
+		option.trackerId = js.dom.MouseTracker.start(this.mover.bind(option));
 	},
 	
 	/**
@@ -142,6 +143,7 @@ js.dom.Drag = {
 };
 
 ///import js.util.Type;
+///import js.client.Features.~functionBind;
 ///import js.dom.Stage.get;
 ///import js.dom.Stage.mark;
 ///import js.dom.BoxModel;
