@@ -63,11 +63,13 @@ if (js.dom.Node) {
 	
 	if (js.dom.INodeEvent) {
 		test('node.addEventListener()', function () {
-			
+			var btn = js.dom.Node('Test_js-dom-Event-click');
+			equals(typeof btn.addEventListener, 'function', '.addEventListener() method on node instance should be a function.');
 		});
 		
 		test('node.removeEventListener()', function () {
-			
+			var btn = js.dom.Node('Test_js-dom-Event-click');
+			equals(typeof btn.removeEventListener, 'function', '.removeEventListener() method on node instance should be a function.');
 		});
 		
 		test('node.on()', function () {
@@ -169,17 +171,21 @@ if (js.dom.Node) {
 	}
 	
 	if (js.dom.INodeStyle) {
-		test('node.getStyle()', function () {
+		test('node.setStyle()', function () {
 			
 		});
 		
-		test('node.setStyle()', function () {
+		test('node.getStyle()', function () {
 			
 		});
 		
 		test('node.css()', function () {
 			var absPosNode = js.dom.Node('#Test_js-dom-Tween');
 			equals(absPosNode.css('position'), 'absolute', 'When use css(key) can get current style value by the specified key.');
+			
+			var anAlignCenterNode = js.dom.Node('#Test_js-dom-Style_align-center-2');
+			anAlignCenterNode.css('textAlign', 'center');
+			equals(anAlignCenterNode.css('textAlign'), 'center');
 		});
 	}
 	

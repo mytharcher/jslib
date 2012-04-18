@@ -21,6 +21,11 @@ if (js.dom.Style) {
 	});
 	
 	test('js.dom.Style.set()', function(){
+		// text-align(.textAlign)
+		js.dom.Style.set('Test_js-dom-Style_align-center', 'textAlign', 'center');
+		equals(js.dom.Stage.get('Test_js-dom-Style_align-center').style.textAlign, 'center', 'textAlign property should be set right.');
+		
+		// browser compatible styles
 		js.dom.Style.set('Test_js-dom-Style', 'color', 'red');
 		equals(js.dom.Stage.get('Test_js-dom-Style').style.color, 'red', 'Use method "set" can set a text color successfully.');
 		
