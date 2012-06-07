@@ -7,6 +7,7 @@
  * update:
  */
 
+///import js.client.Features.~functionBind;
 ///import js.dom.Event.Handlers.preventDefault;
 ///import js.dom.Event.Handlers.stopPropagation;
 ///import js.dom.Event.Handlers.stopAll;
