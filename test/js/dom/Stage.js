@@ -44,6 +44,21 @@ if (js.dom.Stage) {
 		
 		equals(js.dom.Stage.getNextHighestDepth(true), 1001, 'When force update argument passed in, get the depth form max of all document elements and plus 1.');
 	});
+	
+	asyncTest('js.dom.Stage.loadScript(url,{onerror:fn})', function () {
+		js.dom.Stage.loadScript('not-exist-script.js', {
+			onload: function () {
+				start();
+				ok(js.client.Browser.IE && js.client.Browser.IE <= 8,
+					'When load a not exist script file, IE 6-8 onload happen.');
+			},
+			onerror: function () {
+				start();
+				ok(true, 'When load a not exist script file, onerror should be invoked.');
+			}
+		});
+	});
+	
 	js.dom.Drag.attach('Test_js-dom-Tween', {
 		restrict: [0, 100, 500, 500]
 	});
