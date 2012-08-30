@@ -30,6 +30,7 @@
  * 		[m] Change the type judgement from by the class js.util.Type to native implement by typeof expression, to cut off the dependency circle.
  */
 
+///import js.client.Features.~arrayIndexOf;
 ///import js.util;
 
 /**
@@ -104,13 +105,25 @@ js.util.Class = js.util.Class || {
 	 * @return {Object}
 	 */
 	mix: (function (specialKeys) {
-		function ifOverride (target, source, key, override) {
-			var over = typeof override == 'function' ?
-				override.call(source, key)
-				: (override instanceof Array ?
-					override.indexOf(key) >= 0
-					: override);
-			return source.hasOwnProperty(key) && (typeof over == 'undefined' ? !target.hasOwnProperty(key) : over);
+		function doMix (target, source, key, override, deep, deleteNull) {
+			var over,
+				overDef = typeof override != 'undefined',
+				Class = js.util.Class;
+			if (overDef) {
+				over = typeof override == 'function' ?
+					override.call(source, key)
+					: (override instanceof Array ?
+						override.indexOf(key) >= 0
+						: override);
+			}
+			
+			if (source.hasOwnProperty(key) && (overDef ? over : !target.hasOwnProperty(key))) {
+				item = source[key];
+				target[key] = deep ? Class.mix(target[key], item, true, true) : item;
+				if (deleteNull && item === null) {
+					delete target[key];
+				}
+			}
 		}
 		
 		return function (target, source, override, deep) {
@@ -118,25 +131,21 @@ js.util.Class = js.util.Class || {
 				isFunction = Object.prototype.toString.call(source) == '[object Function]',
 				isObject = source && typeof source == 'object' && !isFunction,
 				isArray = source instanceof Array,
-				keys = [], key, i, len, item,
-				Class = js.util.Class;
+				keys = [], i, len, item;
 			if (isObject || (isFunction && !deep)) {
 				target = target || (isArray ? [] : {});
-				for (i in source) {
-					if (source.hasOwnProperty(i)) {
-						keys.push(i);
+				
+				if (isArray) {
+					for (i = 0, len = source.length; i < len; ) {
+						doMix(target, source, i++, override, deep);
 					}
+				} else {
+					keys = Object.keys(source);
 				}
+				
 				keys = keys.concat(specialKeys);
-				for (i = 0, len = keys.length; i < len; i++) {
-					key = keys[i];
-					if (key != 'prototype' && ifOverride(target, source, key, override)) {
-						item = source[key];
-						target[key] = deep ? Class.mix(target[key], item, true, true) : item;
-						if (!isArray && item === null) {
-							delete target[key];
-						}
-					}
+				for (i = 0, len = keys.length; i < len; ) {
+					doMix(target, source, keys[i++], override, deep, true);
 				}
 			} else {
 				target = source;
