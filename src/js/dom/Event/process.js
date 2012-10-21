@@ -33,8 +33,8 @@ js.dom.Event.process = function (ev) {
 		if (filter) {
 			for (var node = target; node && node != this; node = node.parentNode) {
 				var filterType = typeof filter;
-				if (filterType == 'string' && js.dom.Selector.match(node, filter, this)
-					|| (filterType == 'function') && filter(node)) {
+				if (filterType == 'string' && js.dom.Selector.match(node, filter, this) ||
+					(filterType == 'function') && filter(node)) {
 					if (fn.call(node, e) === false) {
 						e.preventDefault();
 						break;

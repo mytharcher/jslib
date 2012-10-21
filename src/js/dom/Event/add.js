@@ -54,7 +54,7 @@ js.dom.Event.add = function (object, type, fn, filter) {
 		
 		// 如果发现该事件类型需要兼容修复，
 		// 则使用兼容后的外包处理及类型。
-		if (fixed = Compatible[type]) {
+		if ((fixed = Compatible[type])) {
 			wrap = fixed.wrap(fn);
 			type = fixed.type;
 		}
