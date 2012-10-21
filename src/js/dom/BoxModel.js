@@ -36,11 +36,11 @@ js.dom.BoxModel = {
 		
 		if (!refer) {
 			if (cStyle.position == 'absolute') {
-				pos.x = el.offsetLeft - (parseInt(cStyle.marginLeft) || 0);
-				pos.y = el.offsetTop - (parseInt(cStyle.marginTop) || 0);
+				pos.x = el.offsetLeft - (parseInt(cStyle.marginLeft, 10) || 0);
+				pos.y = el.offsetTop - (parseInt(cStyle.marginTop, 10) || 0);
 			} else if (cStyle.position == 'relative') {
-				pos.x = (parseInt(cStyle.left) || 0);
-				pos.y = (parseInt(cStyle.top) || 0);
+				pos.x = (parseInt(cStyle.left, 10) || 0);
+				pos.y = (parseInt(cStyle.top, 10) || 0);
 			}
 		} else {
 			for (var node = el; node.offsetParent && node != refer; node = node.offsetParent) {
@@ -55,8 +55,8 @@ js.dom.BoxModel = {
 	//		pos.x = el.offsetLeft - node.offsetLeft;//-(parseInt(cStyle.marginLeft)||0);
 	//		pos.y = el.offsetTop - node.offsetTop;//-(parseInt(cStyle.marginTop)||0);
 			if (cStyle.position == 'static' && el.currentStyle) {
-				pos.x += (parseInt(document.body.currentStyle.marginLeft) || 0) * 2;
-				pos.y += (parseInt(document.body.currentStyle.marginTop) || 0) * 2;
+				pos.x += (parseInt(document.body.currentStyle.marginLeft, 10) || 0) * 2;
+				pos.y += (parseInt(document.body.currentStyle.marginTop, 10) || 0) * 2;
 			}
 		}
 		pos.left = pos.x;
