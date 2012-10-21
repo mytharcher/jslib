@@ -17,6 +17,7 @@
 
 ///import js.util.Class;
 ///import js.util.Global.noop;
+///import js.client.Features.~json;
 ///import js.net;
 ///import js.net.URL;
 ///import js.net.URLParameter;
@@ -318,21 +319,12 @@ js.net.Ajax.option = {
 				if (me.onsuccess) {
 					var response = request.responseText;
 					switch (me.responseType) {
-						case myClass.DATA_TYPE_XML:
-							response = request.responseXML;
+						case myClass.DATA_TYPE_JSON:
+							response = JSON.parse(response);
 							break;
 							
-						case myClass.DATA_TYPE_JSON:
-							var json = response;
-							try {
-								json = (new Function('return ' + response + ';'))();
-							} catch (ex) {
-								me.onjsonerror(ex, response);
-							} finally {
-								if (typeof json == 'object') {
-									response = json;
-								}
-							}
+						case myClass.DATA_TYPE_XML:
+							response = request.responseXML;
 							break;
 							
 						default:
