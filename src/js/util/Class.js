@@ -12,22 +12,22 @@
  * @2011-01-10 by mytharcher [m] Fix bug in method "extend", especially for extend an object contains a constructor key.
  * @2011-06-29 by mytharcher [m] Fix bug in method "create" and "inherit", for supporting the syntax of "subClassInstance instanceof SuperClass == true".
  * @2011-08-13 by mytharcher
- * 		[m] Change the method "extend" to "mix" to avoid confusion about extend actions.
+ *      [m] Change the method "extend" to "mix" to avoid confusion about extend actions.
  * @2011-08-18 by mytharcher
- * 		[m] Move the implement process from method "inherit" to "create" for clean.
+ *      [m] Move the implement process from method "inherit" to "create" for clean.
  * @2011-08-24 by mytharcher
- * 		[m] Change class inheritship property "superClass" in newly created classes to "Super".
- * 		[d] Remove prototype property "_super" from newly created classes.
- * 		[m] Modify "implement" API to support more arguments.
+ *      [m] Change class inheritship property "superClass" in newly created classes to "Super".
+ *      [d] Remove prototype property "_super" from newly created classes.
+ *      [m] Modify "implement" API to support more arguments.
  * @2011-09-02 by mytharcher
- * 		[m] Add array support for method "mix" to specify the argument "override".
+ *      [m] Add array support for method "mix" to specify the argument "override".
  * @2011-09-25 by mytharcher
- * 		[m] Change method "mix" to allow copy empty properties.
+ *      [m] Change method "mix" to allow copy empty properties.
  * @2011-10-30 by mytharcher
- * 		[m] Abandon the auto-created constructor in newly created class without specifying a own constructor, for being more common as other languages.
- * 		[m] Remove "Super" in newly created sub-class to avoid confusion.
+ *      [m] Abandon the auto-created constructor in newly created class without specifying a own constructor, for being more common as other languages.
+ *      [m] Remove "Super" in newly created sub-class to avoid confusion.
  * @2012-01-10 by mytharcher
- * 		[m] Change the type judgement from by the class js.util.Type to native implement by typeof expression, to cut off the dependency circle.
+ *      [m] Change the type judgement from by the class js.util.Type to native implement by typeof expression, to cut off the dependency circle.
  */
 
 ///import js.client.Features.~arrayIndexOf;
@@ -167,28 +167,8 @@ js.util.Class = js.util.Class || {
 	 */
 	create: function (proto, Super, interfaces) {
 		var Class = js.util.Class,
-			newClass = proto.hasOwnProperty('constructor') ? proto.constructor : new Function;
-			// Super = Super || Object;
+			newClass = proto.hasOwnProperty('constructor') ? proto.constructor : new Function();
 		
-		// if (proto.hasOwnProperty('constructor')) {
-			// newClass = proto.constructor;
-		// } else {
-			// var tplStr = '';
-			// //解决了派生类不指定constructor是默认继承超类构造函数不能超过两级的问题
-			// if (Super) {
-				// var defConRe = /^function anonymous\(\)\s*\{\s*this\.Super(\.prototype\.Super)*\.apply\(this,\s*arguments\);\s*\}$/;
-				// tplStr += 'this.Super';
-				// for (var s = Super; s; s = s.prototype.Super) {
-					// if (defConRe.test(s.toString())) {
-						// tplStr += '.prototype.Super';
-					// } else {
-						// break;
-					// }
-				// }
-				// tplStr += '.apply(this, arguments);';
-			// }
-			// newClass = new Function(tplStr);
-		// }
 		Class.copy(proto, newClass.prototype);
 		
 		//如果声明了父类，则从父类继承
@@ -266,10 +246,10 @@ js.util.Class = js.util.Class || {
 				for (var p in interProto) {
 					if (interProto.hasOwnProperty(p)) {
 						var protoItem = interProto[p];
-						if (p != 'constructor'
-							&& p != 'prototype'
-							&& obj2str.call(protoItem) == '[object Function]'
-							&& !someClass.prototype[p]
+						if (p != 'constructor' &&
+							p != 'prototype' &&
+							obj2str.call(protoItem) == '[object Function]' &&
+							!someClass.prototype[p]
 						) {
 							someClass.prototype[p] = protoItem;
 						}
