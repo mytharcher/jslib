@@ -1,3 +1,7 @@
 nightly/*
 release/*
+scrap/*
 .project
+test/test.html
+.DS_Store
+

@@ -8,6 +8,9 @@
  */
 
 ///import js.client.Browser;
+///import js.client.Features.scriptOnload;
+///import js.client.Features.scriptOnerror;
+///import js.net.URL;
 ///import js.dom.Stage;
 
 /**
@@ -23,24 +26,33 @@
  * @param {Object} option 其他选项：noCache，是否缓存，默认false；onload，加载完成的回调函数；
  */
 js.dom.Stage.loadScript = function (url, option) {
-	var url = new js.net.URL(url);
-	if (option.noCache) {
-		url.setParameter(Date.now(), Math.random());
+	var opt = option || {};
+	var u = new js.net.URL(url);
+	if (opt.noCache) {
+		u.setParameter(Date.now(), Math.random());
 	}
+	var pos = document.getElementsByTagName('script')[0];
 	var script = document.createElement('script');
-	script.type = 'text/javascript';
 	
-	script[js.client.Browser.IE ? 'onreadystatechange' : 'onload'] = function (ev) {
-		if (js.client.Browser.IE && this.readyState == 'loaded' || !js.client.Browser.IE) {
-			option.onload && option.onload(this);
-			this.onreadystatechange = this.onload = null;
-		}
+	if (js.client.Features.scriptOnload) {
+		script.onload = opt.onload;
+	} else if (js.client.Browser.IE) {
+		script.onreadystatechange = function (ev) {
+			if (this.readyState == 'loaded') {
+				opt.onload && opt.onload(this);
+				this.onreadystatechange = this.onload = this.onerror = null;
+			}
+		};
 	}
 	
-	document.body.appendChild(script);
-	script.src = url.toString();
+	if (js.client.Features.scriptOnerror) {
+		script.onerror = opt.onerror || null;
+	}
 	
-	script = null;
+	script.src = u.toString();
+	pos.parentNode.insertBefore(script, pos);
+	
+	script = pos = null;
 };
 
 ///import js.net.URL;

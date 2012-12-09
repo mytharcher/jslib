@@ -32,8 +32,9 @@ js.dom.Drag = {
 	 */
 	attach: function (element, option) {
 		var elem = js.dom.Stage.get(element),
-			id = js.dom.Stage.mark(elem);
-		js.dom.Event.add(option.handlerId || elem, 'mousedown', function (ev) {
+			id = js.dom.Stage.mark(elem),
+			handlerId = option.handlerId || option.handler ? js.dom.Stage.mark(option.handler) : '';
+		js.dom.Event.add(handlerId || elem, 'mousedown', function (ev) {
 			js.dom.Drag.start(id, option);
 			js.dom.Event.add(document, 'mouseup', function (ev) {
 				js.dom.Drag.stop(id);

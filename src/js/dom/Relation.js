@@ -12,7 +12,7 @@
 ///import js.util.Shortcut;
 
 /**
- * @class js.dom.Releation
+ * @class js.dom.Relation
  * DOM节点关系类
  * @static
  * @singleton
@@ -48,7 +48,7 @@ js.dom.Relation = js.dom.Relation || {
 	 */
 	indexOfSiblings: function (element) {
 		var parentNode = element.parentNode;
-		return parentNode ? this.children(parentNode).indexOf(element) : 0;
+		return parentNode ? js.dom.Relation.children(parentNode).indexOf(element) : 0;
 	},
 	
 	/**
@@ -83,7 +83,7 @@ js.dom.Relation = js.dom.Relation || {
 //	},
 	test: js.util.Shortcut.create({
 		'undefined': function (element) {
-			return element.nodeType == 1 || element.nodeType == 3 && element.toString().trim().length > 0;
+			return element.nodeType == 1 || element.nodeType == 3 && element.nodeValue.trim().length > 0;
 		},
 		'boolean': function (element, includeBlank) {
 			return element.nodeType == 1 || element.nodeType == 3 && includeBlank && element.toString().trim().length > 0;
@@ -110,7 +110,7 @@ js.dom.Relation = js.dom.Relation || {
 		var node = element;
 		do {
 			node = node.nextSibling;
-		} while (node && !this.test(selector));
+		} while (node && !js.dom.Relation.test(node, selector));
 		return node;
 	},
 	
@@ -126,7 +126,7 @@ js.dom.Relation = js.dom.Relation || {
 	 */
 	nextAll: function (element, selector) {
 		var ret = [];
-		for (var node = element.nextSibling; node && this.test(selector); node = node.nextSibling) {
+		for (var node = element.nextSibling; node && js.dom.Relation.test(node, selector); node = node.nextSibling) {
 			ret.push(node);
 		}
 		return ret;
@@ -146,7 +146,7 @@ js.dom.Relation = js.dom.Relation || {
 		var node = element;
 		do {
 			node = node.previousSibling;
-		} while (node && !this.test(selector));
+		} while (node && !js.dom.Relation.test(node, selector));
 		return node;
 	},
 	
@@ -162,7 +162,7 @@ js.dom.Relation = js.dom.Relation || {
 	 */
 	prevAll: function (element, selector) {
 		var ret = [];
-		for (var node = element.previousSibling; node && this.test(selector); node = node.previousSibling) {
+		for (var node = element.previousSibling; node && js.dom.Relation.test(node, selector); node = node.previousSibling) {
 			ret.push(node);
 		}
 		return ret;
@@ -217,7 +217,7 @@ js.dom.Relation = js.dom.Relation || {
 	 * @return {Element}
 	 */
 	firstChild: function (element, selector) {
-		for (var node = element.firstChild; node && !this.test(selector);node = node.nextSibling);
+		for (var node = element.firstChild; node && !js.dom.Relation.test(node, selector);node = node.nextSibling);
 		return node;
 	},
 	
@@ -232,7 +232,7 @@ js.dom.Relation = js.dom.Relation || {
 	 * @return {Element|null}
 	 */
 	lastChild: function (element, selector) {
-		for (var node = element.lastChild; node && !this.test(selector);node = node.previousSibling);
+		for (var node = element.lastChild; node && !js.dom.Relation.test(node, selector);node = node.previousSibling);
 		return node;
 	},
 	
@@ -249,7 +249,7 @@ js.dom.Relation = js.dom.Relation || {
 	children: function (element, selector) {
 		var ret = [];
 		for (var node = element.firstChild; node; node = node.nextSibling) {
-			this.test(node, false) && ret.push(node);
+			js.dom.Relation.test(node, false) && ret.push(node);
 		}
 		return ret;
 	},
@@ -265,7 +265,8 @@ js.dom.Relation = js.dom.Relation || {
 	 * @return {Array}
 	 */
 	siblings: function (element, selector) {
-		return this.prevAll(element, selector).concat(this.nextAll(element, selector));
+		var Relation = js.dom.Relation;
+		return Relation.prevAll(element, selector).concat(Relation.nextAll(element, selector));
 	}
 };
 
