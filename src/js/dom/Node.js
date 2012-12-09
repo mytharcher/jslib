@@ -93,15 +93,18 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 	/**
 	 * 返回选择器过滤后的元素集合
 	 * 
-	 * @param {String} selector
+	 * @param {String/Function} selector
 	 * 
 	 * @return {Node}
 	 */
 	filter: function (selector) {
 		var ret = [];
+		var isFunc = typeof selector == 'function';
 		for (var i = 0, len = this.length; i < len; i++) {
 			var item = this[i];
-			if (js.dom.Selector.match(item, selector)) {
+			if (isFunc ?
+				selector(item) :
+				js.dom.Selector.match(item, selector)) {
 				ret.push(item);
 			}
 		}
