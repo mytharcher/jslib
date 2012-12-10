@@ -93,7 +93,8 @@ js.dom.Cookie = {
 	 * @static
 	 */
 	clear: function () {
-		this.remove(Object.keys(this.get()));
+		var Cookie = js.dom.Cookie;
+		Cookie.remove.apply(Cookie, Object.keys(this.get()));
 	},
 	
 	/**
