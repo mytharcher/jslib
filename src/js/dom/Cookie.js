@@ -94,7 +94,7 @@ js.dom.Cookie = {
 	 */
 	clear: function () {
 		var Cookie = js.dom.Cookie;
-		Cookie.remove.apply(Cookie, Object.keys(this.get()));
+		Cookie.remove.apply(Cookie, Object.keys(Cookie.get()));
 	},
 	
 	/**
