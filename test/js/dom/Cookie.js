@@ -4,25 +4,25 @@ if (js.dom.Cookie) {
 	
 	test('js.dom.Cookie.set()', function(){
 		js.dom.Cookie.set('a', 1);
-		ok(document.cookie.indexOf('a=1') >= 0, 'When set a value in a key to the cookie, it can be read from document.cookie.');
+		ok(/\ba=1;?\b/.test(document.cookie), 'When set a value in a key to the cookie, it can be read from document.cookie.');
 		
 		js.dom.Cookie.set('a', 2);
-		ok(document.cookie.indexOf('a=1') == -1 && document.cookie.indexOf('a=2') >= 0, 'When set a value in a exist key to the cookie, the value should be the new one.');
+		ok(!/\ba=1;?\b/.test(document.cookie) && /\ba=2;?\b/.test(document.cookie), 'When set a value in a exist key to the cookie, the value should be the new one.');
 		
 		js.dom.Cookie.set('a=3; b=1');
-		ok(document.cookie.indexOf('a=3') >= 0 && document.cookie.indexOf('b=1') >= 0, 'Use a key-value string can set cookie successfully.');
+		ok(/\ba=3;?\b/.test(document.cookie) >= 0 && /\bb=1;?\b/.test(document.cookie) >= 0, 'Use a key-value string can set cookie successfully.');
 		
 		js.dom.Cookie.set({
 			a: 4,
 			b: 2
 		});
-		ok(document.cookie.indexOf('a=4') >= 0 && document.cookie.indexOf('b=2') >= 0, 'Use a object can set cookie successfully.');
+		ok(/\ba=4;?\b/.test(document.cookie) && /\bb=2;?\b/.test(document.cookie), 'Use a object can set cookie successfully.');
 		
 		js.dom.Cookie.set('a', 0);
-		ok(document.cookie.indexOf('a=0') >= 0, 'Set a key to a number value, the number should be converse to a string.');
+		ok(/\ba=0;?\b/.test(document.cookie), 'Set a key to a number value, the number should be converse to a string.');
 		
 		js.dom.Cookie.set('b', false);
-		ok(document.cookie.indexOf('b=false') >= 0, 'Set a key to a boolean value, the bool should be converse to a string.');
+		ok(/\bb=false;?\b/.test(document.cookie), 'Set a key to a boolean value, the bool should be converse to a string.');
 		
 		var specialChars = ',.?:"\'~!@#$%^&*()-_+{}[]|\\;=';
 		js.dom.Cookie.set('c', 'abc' + specialChars + 'def');
