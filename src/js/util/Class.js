@@ -117,7 +117,10 @@ js.util.Class = js.util.Class || {
 						: override);
 			}
 			
-			if (source.hasOwnProperty(key) && (overDef ? over : !target.hasOwnProperty(key))) {
+			if (source.hasOwnProperty(key) &&
+				(overDef && typeof over != 'undefined' ?
+					over : !target.hasOwnProperty(key))
+			) {
 				item = source[key];
 				target[key] = deep ? Class.mix(target[key], item, true, true) : item;
 				if (deleteNull && item === null) {
