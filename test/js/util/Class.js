@@ -119,7 +119,21 @@ if (js.util.Class) {
 		var f = js.util.Class.mix({
 			b: 10
 		}, a, true);
+		equals(f.b, 1, 'When set override option true, property force override.');
 		
+		var g = js.util.Class.mix({
+			b: 10
+		}, a, false);
+		equals(g.b, 10, 'When set override option false, property not override.');
+		equals(g.c, js.util.Global.noop(), 'When set override option false, property not in target should not be mixed either.');
+		
+		var h = js.util.Class.mix({
+			b: 10
+		}, a, function (key) {
+			return key == 'b';
+		});
+		equals(h.b, 1, 'When use override function, the property should or not be mixed by the return value of function.');
+		equals(h.c, js.util.Global.noop(), 'When use override function, the property should or not be mixed by the return value of function.');
 	});
 	
 	test('js.util.Class.create()', function(){
