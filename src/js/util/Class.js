@@ -219,8 +219,8 @@ js.util.Class = js.util.Class || {
 		//复制超类的静态对象到派生类
 		Class.mix(someClass, Super);
 		
-		//设置派生类的超类属性为超类
-		// someClass.prototype.Super = Super;
+		//设置派生类的超类属性为超类的原型
+		someClass.__super__ = Super.prototype;
 		
 		//修复派生类的构造函数属性
 		someClass.prototype.constructor = someClass;
