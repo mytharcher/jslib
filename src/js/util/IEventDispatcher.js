@@ -49,7 +49,7 @@ js.util.IEventDispatcher = {
 	 * @param {Function} listener
 	 */
 	addEventListener: function (type, listener) {
-		var listenerList = this._getListeners(type);
+		var eventList = this._getListeners();
 		if (!eventList[type]) {
 			eventList[type] = [];
 		}
@@ -66,7 +66,7 @@ js.util.IEventDispatcher = {
 	 * @param {Function} listener
 	 */
 	removeEventListener: function (type, listener) {
-		var listenerList = this._getListeners(type);
+		var registeredType = this._getListeners(type);
 		if (registeredType) {
 			var index = registeredType.indexOf(listener);
 			if (index >= 0) {
