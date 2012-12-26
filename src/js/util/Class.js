@@ -232,7 +232,7 @@ js.util.Class = js.util.Class || {
 	 * 实现接口
 	 * @method js.util.Class.implement
 	 * @static
-	 * 该方法会将inter对象上的所有函数扩展到someClass的原型上，前提是someClass的原型上没有同名的方法。
+	 * 该方法会将inter对象上的所有函数扩展到someClass的原型上，前提是someClass自己的原型上没有同名的方法。
 	 * 通过此方法以达到在创建类时可以实现其他类提供的接口。
 	 * 
 	 * @param {Function} someClass
@@ -252,7 +252,7 @@ js.util.Class = js.util.Class || {
 						if (p != 'constructor' &&
 							p != 'prototype' &&
 							obj2str.call(protoItem) == '[object Function]' &&
-							!someClass.prototype[p]
+							!someClass.prototype.hasOwnProperty(p)
 						) {
 							someClass.prototype[p] = protoItem;
 						}
