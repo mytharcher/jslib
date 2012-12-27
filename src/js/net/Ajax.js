@@ -42,10 +42,7 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * @cfg {Boolean} blockDuplicate 是否阻止同一个实例上重复的请求，默认：false
 	 */
 	/**
-	 * @cfg {String} contentType 发送内容类型，默认：'application/x-www-form-urlencoded'
-	 */
-	/**
-	 * @cfg {String} encoding 发送编码，默认：'utf-8'
+	 * @cfg {String} enctype 发送内容类型，默认：'application/x-www-form-urlencoded'
 	 */
 	/**
 	 * @cfg {String} responseType 返回数据类型，默认：'text'(纯文本)
@@ -132,7 +129,7 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 		
 		request.open(this.method, url.toString(), this.async);
 		
-		data && request.setRequestHeader("Content-type", this.contentType);
+		data && request.setRequestHeader("Content-type", this.enctype);
 			
 		request.send(data);
 	},
@@ -298,8 +295,7 @@ js.net.Ajax.option = {
 	async: true,
 	noCache: false,
 	blockDuplicate: false,
-	contentType: 'application/x-www-form-urlencoded',
-	encoding: 'utf-8',
+	enctype: 'application/x-www-form-urlencoded',
 	responseType: js.net.Ajax.DATA_TYPE_TEXT,
 	encoder: encodeURIComponent,
 	
