@@ -109,19 +109,19 @@ js.net.URLParameter = js.util.Class.create({
 	 * @return {Array/String/Object}
 	 */
 	get: function (key) {
-		var ret = [];
+		var ret = [], i;
 		var param = this._data;
 		if (key) {
 			var value = param[key];
 			if (value) {
-				for (var i in value) {
+				for (i in value) {
 					ret.push(i);
 				}
 			}
 			ret = ret.length ? ret.length == 1 ? ret[0] : ret : null;
 		} else {
 			ret = {};
-			for (var i in param) {
+			for (i in param) {
 				var item = this.get(i);
 				if (item !== null) {
 					ret[i] = item;
@@ -183,7 +183,7 @@ js.net.URLParameter = js.util.Class.create({
 		var ret = [];
 		var useEncoder = typeof encoder == 'function';
 		for(var i in param){
-			if(i.toString().length && typeof(param[i]) != 'undefined' && param[i] != null){
+			if(i.toString().length && typeof(param[i]) != 'undefined' && param[i] !== null){
 				var p = param[i];
 				
 				for (var j in p) {

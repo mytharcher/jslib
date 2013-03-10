@@ -26,5 +26,7 @@
  */
 js.util.Global.guid = function (prefix, suffix) {
 	var guid = js.util.Global.guid;
-	return (typeof prefix != 'undefined' ? prefix : '') + (guid.i ? ++guid.i : (guid.i = 1)) + (typeof suffix != 'undefined' ? suffix : '');
+	return (typeof prefix != 'undefined' ? prefix : '') +
+		(guid.i ? ++guid.i : (guid.i = 1)) +
+		(typeof suffix != 'undefined' ? suffix : '');
 };
