@@ -51,6 +51,9 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * @cfg {Function} encoder 发送数据的编码函数，默认无
 	 */
 	/**
+	 * @cfg {Boolean} pureText 是否要发送纯文本，默认否，仅在POST是可用
+	 */
+	/**
 	 * @cfg {Function} onsuccess 当使用默认onreadystatechange事件(readyState==4&&200<=status<300)加载成功时的处理，下同
 	 */
 	/**
@@ -97,9 +100,10 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	
 	/**
 	 * 发送请求
-	 * @param {Object/URLParameter} 加载时的参数
+	 * @param {String} 请求方法
+	 * @param {Object/URLParameter/String} 加载时的参数
 	 */
-	request: function (data) {
+	request: function (method, data) {
 		var myClass = this.constructor;
 		
 		var request = this.httpRequest;
@@ -112,22 +116,31 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 			}
 		}
 		
-		var url = new js.net.URL(this.url);
+		if (arguments.length <= 1) {
+			data = method;
+			method = this.method;
+		}
 		
-		var data = new js.net.URLParameter(data);
+		var url = new js.net.URL(this.url);
 		
 		if (this.noCache) {
 			url.setParameter('@', (new Date()).valueOf());
 		}
 		
-		if (this.method == myClass.HTTP_GET) {
-			url.setParameter(data.get());
-			data = null;
+		if (!this.pureText) {
+			data = new js.net.URLParameter(data);
+		
+			if (method == myClass.HTTP_GET) {
+				url.setParameter(data.get());
+				data = null;
+			} else {
+				data = data.toString(this.encoder);
+			}
 		} else {
-			data = data.toString(this.encoder);
+			this.enctype = myClass.ENCTYPE_PLAIN;
 		}
 		
-		request.open(this.method, url.toString(), this.async);
+		request.open(method, url.toString(), this.async);
 		
 		data && request.setRequestHeader("Content-type", this.enctype);
 			
@@ -139,7 +152,7 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * @method abort
 	 */
 	abort: function () {
-		var request = this.httpRequest
+		var request = this.httpRequest;
 		if (request.readyState != this.constructor.STATE_COMPLETE) {
 			request.abort();
 			request.onreadystatechange = this._readyStateChangeHander;
@@ -216,6 +229,22 @@ js.util.Class.copy({
 	 * @type {String}
 	 */
 	DATA_TYPE_XML: 'xml',
+	
+	/**
+	 * 编码方式：纯文本
+	 * @constant
+	 * @property ENCTYPE_PLAIN
+	 * @type {String}
+	 */
+	ENCTYPE_PLAIN: 'text/plain',
+	
+	/**
+	 * 编码方式：form-urlencoded
+	 * @constant
+	 * @property ENCTYPE_FORM_URLENCODED
+	 * @type {String}
+	 */
+	ENCTYPE_FORM_URLENCODED: 'application/x-www-form-urlencoded',
 	
 	/**
 	 * 创建异步请求对象
@@ -295,9 +324,10 @@ js.net.Ajax.option = {
 	async: true,
 	noCache: false,
 	blockDuplicate: false,
-	enctype: 'application/x-www-form-urlencoded',
+	enctype: js.net.Ajax.ENCTYPE_FORM_URLENCODED,
 	responseType: js.net.Ajax.DATA_TYPE_TEXT,
 	encoder: encodeURIComponent,
+	pureText: false,
 	
 	onsuccess: js.util.Global.noop,
 	onfailure: js.util.Global.noop,
@@ -315,16 +345,16 @@ js.net.Ajax.option = {
 				if (me.onsuccess) {
 					var response = request.responseText;
 					switch (me.responseType) {
-						case myClass.DATA_TYPE_JSON:
-							response = JSON.parse(response);
-							break;
-							
-						case myClass.DATA_TYPE_XML:
-							response = request.responseXML;
-							break;
-							
-						default:
-							break;
+					case myClass.DATA_TYPE_JSON:
+						response = JSON.parse(response);
+						break;
+						
+					case myClass.DATA_TYPE_XML:
+						response = request.responseXML;
+						break;
+						
+					default:
+						break;
 					}
 					me.onsuccess(response, request);
 				}
