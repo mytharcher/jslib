@@ -178,7 +178,10 @@ js.util.Class = js.util.Class || {
 		Super && Class.inherit(newClass, Super);
 		
 		//实现接口
-		interfaces && Class.implement(newClass, [].slice.call(arguments, 2));
+		if (interfaces) {
+			var inters = interfaces instanceof Array ? interfaces : [].slice.call(arguments, 2);
+			Class.implement(newClass, inters);
+		}
 		
 		return newClass;
 	},
