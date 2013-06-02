@@ -3,7 +3,19 @@
 ///import js.text.Encoder.encodeHTML;
 ///import js.dom;
 
+/**
+ * @class js.dom.Flash
+ * Flash类对象，管理Flash的常用方法
+ * @singleton
+ * 
+ * from tangram
+ */
 js.dom.Flash = {
+	/**
+	 * 检测客户端FlashPlayer的版本
+	 * @type {String}
+	 * @property version
+	 */
 	version: (function () {
 		var n = navigator;
 		if (n.plugins && n.mimeTypes.length) {
@@ -25,6 +37,15 @@ js.dom.Flash = {
 			}
 		}
 	})(),
+	
+	/**
+	 * 根据ID获取Flash对象
+	 * @static
+	 * 
+	 * @param  {String} name Flash对象的ID
+	 * 
+	 * @return {Object} 返回Flash对象
+	 */
 	getMovie: function (name) {
 		//ie9下, Object标签和embed标签嵌套的方式生成flash时,
 		//会导致document[name]多返回一个Object元素,而起作用的只有embed标签
@@ -38,6 +59,14 @@ js.dom.Flash = {
 			: movie || window[name];
 	},
 	
+	/**
+	 * 创建一个Flash对象的HTML字符串
+	 * @static
+	 * 
+	 * @param  {Object} options 创建Flash的参数对象
+	 * 
+	 * @return {String}
+	 */
 	createHTML: function (options) {
 		options = options || {};
 		var version = js.dom.Flash.version, 
