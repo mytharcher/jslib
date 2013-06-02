@@ -32,5 +32,5 @@ if (!Object.keys) {
 				result.push(name);
 		}
 		return result;
-	}
+	};
 }
