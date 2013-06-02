@@ -31,6 +31,7 @@
  */
 
 ///import js.client.Features.~arrayIndexOf;
+///import js.client.Features.~objectKeys;
 ///import js.util;
 
 /**
@@ -106,7 +107,7 @@ js.util.Class = js.util.Class || {
 	 */
 	mix: (function (specialKeys) {
 		function doMix (target, source, key, override, deep, deleteNull) {
-			var over,
+			var over, item,
 				overDef = typeof override != 'undefined',
 				Class = js.util.Class;
 			if (overDef) {
@@ -134,7 +135,7 @@ js.util.Class = js.util.Class || {
 				isFunction = Object.prototype.toString.call(source) == '[object Function]',
 				isObject = source && typeof source == 'object' && !isFunction,
 				isArray = source instanceof Array,
-				keys = [], i, len, item;
+				keys = [], i, len;
 			if (isObject || (isFunction && !deep)) {
 				target = target || (isArray ? [] : {});
 				
