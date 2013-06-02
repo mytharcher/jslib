@@ -19,7 +19,11 @@ js.dom.Event.Compatible.input = js.client.Browser.IE < 9 ? {
 	wrap: function (fn) {
 		return function (ev) {
 			if (ev.propertyName == 'value') {
-				return fn.call(this, ev);
+				var handler = js.dom.Event.getFixedProcessor(this.id);
+				this.detachEvent('onpropertychange', handler);
+				var ret = fn.call(this, ev);
+				this.attachEvent('onpropertychange', handler);
+				return ret;
 			}
 		};
 	}
