@@ -19,6 +19,6 @@
  * @return {HTMLDocumentElement}
  */
 js.dom.Stage.getDocumentElement = function (win) {
-	var doc =js.dom.Stage.getDocument(win);
+	var doc = js.dom.Stage.getDocument(win);
 	return doc.compatMode == 'BackCompat' ? doc.body : doc.documentElement;
 };
