@@ -105,19 +105,6 @@ js.dom.INodeRelation = js.dom.INodeRelation || js.util.InterfaceFactory.create({
 			return new myClass(js.util.XArray.distinct(ret));
 		});
 	},
-
-	// template: function(base, method, key){
-	// 	//判断是否是get类只针对一个元素操作的方法
-	// 	return key.custom || (key.single ? function(){
-	// 		return base[method].apply(base, [this[0]].concat([].slice.call(arguments, 0)));
-	// 	} : function(){
-	// 		var args = [].slice.call(arguments, 0);
-	// 		this.forEach(function(element){
-	// 			return base[method].apply(base, [element].concat(args));
-	// 		}, this);
-	// 		return this;
-	// 	});
-	// },
 	
 	base: js.dom.Relation,
 	
