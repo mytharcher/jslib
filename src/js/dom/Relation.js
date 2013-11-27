@@ -10,6 +10,7 @@
 
 ///import js.dom;
 ///import js.util.Shortcut;
+///import js.util.Type;
 
 /**
  * @class js.dom.Relation
@@ -88,8 +89,8 @@ js.dom.Relation = js.dom.Relation || {
 		'boolean': function (element, includeBlank) {
 			return element.nodeType == 1 || element.nodeType == 3 && includeBlank && element.toString().trim().length > 0;
 		},
-		'string': function (element, selector) {
-			return js.dom.Selector.match(element, selector);
+		'string': function (element, selector, context) {
+			return js.dom.Selector.match(element, selector, context);
 		},
 		'function': function (element, tester) {
 			return tester(element);
@@ -126,8 +127,10 @@ js.dom.Relation = js.dom.Relation || {
 	 */
 	nextAll: function (element, selector) {
 		var ret = [];
-		for (var node = element.nextSibling; node && js.dom.Relation.test(node, selector); node = node.nextSibling) {
-			ret.push(node);
+		for (var node = element.nextSibling; node; node = node.nextSibling) {
+			if (js.dom.Relation.test(node, selector)) {
+				ret.push(node);
+			}
 		}
 		return ret;
 	},
@@ -162,8 +165,10 @@ js.dom.Relation = js.dom.Relation || {
 	 */
 	prevAll: function (element, selector) {
 		var ret = [];
-		for (var node = element.previousSibling; node && js.dom.Relation.test(node, selector); node = node.previousSibling) {
-			ret.push(node);
+		for (var node = element.previousSibling; node; node = node.previousSibling) {
+			if (js.dom.Relation.test(node, selector)) {
+				ret.push(node);
+			}
 		}
 		return ret;
 	},
@@ -217,7 +222,12 @@ js.dom.Relation = js.dom.Relation || {
 	 * @return {Element}
 	 */
 	firstChild: function (element, selector) {
-		for (var node = element.firstChild; node && !js.dom.Relation.test(node, selector);node = node.nextSibling);
+		if (js.util.Type.isString(selector) && selector && selector.indexOf('>')) {
+			selector = '>' + selector;
+		}
+		for (var node = element.firstChild;
+			node && !js.dom.Relation.test(node, selector, element);
+			node = node.nextSibling);
 		return node;
 	},
 	
@@ -232,7 +242,12 @@ js.dom.Relation = js.dom.Relation || {
 	 * @return {Element|null}
 	 */
 	lastChild: function (element, selector) {
-		for (var node = element.lastChild; node && !js.dom.Relation.test(node, selector);node = node.previousSibling);
+		if (js.util.Type.isString(selector) && selector && selector.indexOf('>')) {
+			selector = '>' + selector;
+		}
+		for (var node = element.lastChild;
+			node && !js.dom.Relation.test(node, selector, element);
+			node = node.previousSibling);
 		return node;
 	},
 	
@@ -248,8 +263,13 @@ js.dom.Relation = js.dom.Relation || {
 	 */
 	children: function (element, selector) {
 		var ret = [];
+		if (js.util.Type.isString(selector) && selector && selector.indexOf('>')) {
+			selector = '>' + selector;
+		}
 		for (var node = element.firstChild; node; node = node.nextSibling) {
-			js.dom.Relation.test(node, false) && ret.push(node);
+			if (js.dom.Relation.test(node, selector, element)) {
+				ret.push(node);
+			}
 		}
 		return ret;
 	},

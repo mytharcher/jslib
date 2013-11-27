@@ -158,11 +158,17 @@ if (js.dom.Node) {
 		});
 		
 		test('node.children()', function () {
-			
+			var node = js.dom.Node('#Test_js-dom-Traversal-tree');
+			equal(node.children().length, 12);
+			equal(node.children('dt').length, 4);
+			equal(node.children('dd').length, 8);
 		});
 		
 		test('node.siblings()', function () {
-			
+			var node = js.dom.Node('#Test-js_util_XArray_toArray-dt3');
+			equal(node.siblings().length, 11);
+			equal(node.siblings('dd').length, 8);
+			equal(node.siblings('dt').length, 3);
 		});
 		
 		test('node.contains()', function () {

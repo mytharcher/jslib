@@ -9,4 +9,8 @@ if (js.dom.Selector) {
 		var underEmptyScope = js.dom.Selector.queryAll('div#Test_js-dom', []);
 		equal(underEmptyScope[0], document.getElementById('Test_js-dom'), 'When empty scope array passed in, it should be as document.');
 	});
+
+	test('js.dom.Selector.match()', function () {
+		
+	});
 }
