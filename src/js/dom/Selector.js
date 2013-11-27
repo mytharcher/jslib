@@ -57,7 +57,8 @@ js.dom.Selector = js.dom.Selector || {
 		
 		var atom = cur.match(_.T);
 		var tag = atom[3] || '*';
-		cur = atom[4] && tag == '*' ? cur : cur.replace(_.T, (atom[1] || ' ') + tag + (atom[4] || ''));
+		// 优先检测是否有#
+		cur = atom[4] && tag == '*' ? cur.replace('*', '') : cur.replace(_.T, (atom[1] || ' ') + tag + (atom[4] || ''));
 		
 		atom = _.W.exec(cur);
 		_.W.lastIndex = 0;
@@ -108,17 +109,24 @@ js.dom.Selector = js.dom.Selector || {
 	 */
 	match: function (item, selector, context) {
 		var _ = js.dom.Selector._,
-			context = context || document,
 			flag = true,
 			atom;
-		while ((atom = _.W.exec(selector))) {
-			var fn = _.E[atom[1]];
-			if (fn && !fn.call(item, atom[2], context)) {
-				flag = false;
-				break;
+			context = context || document;
+		if (item.nodeType == 3) {
+			flag = false;
+		} else {
+			while ((atom = _.W.exec(selector))) {
+				if (!atom[0] && _.W.lastIndex >= selector.length) {
+					break;
+				}
+				var fn = _.E[atom[1] || ''];
+				if (fn && !fn.call(item, atom[2], context)) {
+					flag = false;
+					break;
+				}
 			}
+			_.W.lastIndex = 0;
 		}
-		_.W.lastIndex = 0;
 		return flag;
 	},
 	
@@ -127,9 +135,9 @@ js.dom.Selector = js.dom.Selector || {
 	 */
 	_: {
 		//匹配一个单词的正则
-		W: /([ >#\.\[\]]|[~\|\^\$\*]?=)(?:"?([\w\-]*|\*)"?)?/g,
+		W: /([ >#\.\[\]]|[~\|\^\$\*]?=)?(?:"?([\w\-]*|\*)"?)?/g,
 		//匹配开头第一个单词，无标签容错，id快捷
-		T: /^([ >]?)((\w*|\*)?([#]\w+)?)/,
+		T: /^([ >]?)((\w*|\*)?(#\w+)?)/,
 		//获取阶段的匹配符操作
 		G: {
 			' ': function (word) {return (this || document).getElementsByTagName(word || '*');},
@@ -139,6 +147,7 @@ js.dom.Selector = js.dom.Selector || {
 		},
 		//所有过滤判断条件
 		E:{
+			'': function (word) {return this.nodeName == word.toUpperCase();},
 	//		'\x20': function (word, pn) {for (var node = this; node && node != pn; ) if ((node = node.parentNode) == pn) return true; return false;},
 			'>': function (word, pn) {return this.parentNode == pn && (word == '*' || this.nodeName == word.toUpperCase());},
 			'#': function (word) {return this.getAttribute('id') == word;},

@@ -101,42 +101,54 @@ js.dom.INodeRelation = js.dom.INodeRelation || js.util.InterfaceFactory.create({
 				var result = base[method](this[i], selector);
 				ret.push.apply(ret, result instanceof Array ? result : [result]);
 			}
-			return this.constructor(js.util.XArray.distinct(ret));
+			var myClass = this.constructor;
+			return new myClass(js.util.XArray.distinct(ret));
 		});
 	},
+
+	// template: function(base, method, key){
+	// 	//判断是否是get类只针对一个元素操作的方法
+	// 	return key.custom || (key.single ? function(){
+	// 		return base[method].apply(base, [this[0]].concat([].slice.call(arguments, 0)));
+	// 	} : function(){
+	// 		var args = [].slice.call(arguments, 0);
+	// 		this.forEach(function(element){
+	// 			return base[method].apply(base, [element].concat(args));
+	// 		}, this);
+	// 		return this;
+	// 	});
+	// },
 	
 	base: js.dom.Relation,
 	
 	methods: [
 		{method: 'indexOfSiblings', single: true},
 		'next',
-		{method: 'nextAll', single: true},
+		'nextAll',
 		'prev',
-		{method: 'prevAll', single: true},
+		'prevAll',
 		'parent',
-		{method: 'ancestors', single: true},
+		'ancestors',
 		'firstChild',
 		'lastChild',
-		{method: 'children', single: true},
-		{method: 'siblings', single: true},
-		{
-			/**
-			 * 判断当前节点集合的首个元素是否包含另一个集合的首个元素
-			 * @method contains
-			 * @param {Element/Node/String} 要判断的元素/集合/选择器
-			 * @return {Boolean}
-			 */
-			method: 'contains',
-			custom: function (element) {
-				var node = this.constructor(element)[0];
-				if (node) {
-					return js.dom.Relation.contains(this[0], node);
-				}
-				return false;
-			}
-		}
+		'children',
+		'siblings'
 	]
 });
+
+/**
+ * 判断当前节点集合的首个元素是否包含另一个集合的首个元素
+ * @method contains
+ * @param {Element/Node/String} 要判断的元素/集合/选择器
+ * @return {Boolean}
+ */
+js.dom.INodeRelation.contains = function (element) {
+	var node = this.constructor(element)[0];
+	if (node) {
+		return js.dom.Relation.contains(this[0], node);
+	}
+	return false;
+};
 
 js.util.Class.implement(js.dom.Node, js.dom.INodeRelation);
 
