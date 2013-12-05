@@ -67,7 +67,7 @@ js.dom.Operation = js.dom.Operation || {
 	 * @param {Element} afterElement
 	 */
 	before: function (element, afterElement) {
-		this.insert(element, afterElement.parentNode, afterElement);
+		js.dom.Operation.insert(element, afterElement.parentNode, afterElement);
 	},
 	
 	/**
@@ -79,7 +79,7 @@ js.dom.Operation = js.dom.Operation || {
 	 * @param {Element} beforeElement
 	 */
 	after: function (element, beforeElement) {
-		this.insert(element, beforeElement.parentNode, js.dom.Relation.next(beforeElement));
+		js.dom.Operation.insert(element, beforeElement.parentNode, js.dom.Relation.next(beforeElement));
 	},
 	
 	/**
@@ -91,7 +91,7 @@ js.dom.Operation = js.dom.Operation || {
 	 * @param {Element/String} beforeElement
 	 */
 	append: function (element, parentNode) {
-		this.insert(element, parentNode);
+		js.dom.Operation.insert(element, parentNode);
 	},
 	
 	/**
