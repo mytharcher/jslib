@@ -71,32 +71,54 @@ function callback(){
 	console.log(data); // 200
 }
 js.util.Processor.asyncQueue(fn1, fn2, callback);
+
+asyncQueue(fn1, fn2, fn3);
 </code></pre>
 	 */
 	asyncQueue: (function () {
-		var queue = [], running = false;
-		
-		function process() {
-			if (!running) {
-				running = true;
-				if (queue.length) {
-					var item = queue.shift();
-					item.fn.apply(item.scope, [item.next].concat(item.args));
+		var group = [];
+
+		function run() {
+			for (var i = group.length - 1; i >= 0; i--) {
+				process(group[i], i, group);
+			}
+		}
+
+		function process(queue, index, group) {
+			if (!queue.running) {
+				if (queue.items.length) {
+					queue.running = true;
+
+					queue.items.shift().fn();
 				} else {
-					running = false;
+					group.splice(index, 1);
+
+					queue.running = false;
 				}
 			}
 		}
-		
+
 		return function () {
-			queue.push({
-				group: [].slice.call(arguments, 0),
-				next: process
+			var fns = [].slice.call(arguments);
+			var queue = {
+				running: false
+			};
+
+			function next () {
+				queue.running = false;
+				run();
+			}
+
+			queue.items = fns.map(function (item, index, array) {
+				return {
+					fn: item,
+					next: next
+				};
 			});
-			
-			process();
-			
-			return arguments.callee;
+
+			group.unshift(queue);
+
+			run();
 		};
 	})(),
 	
