@@ -8,6 +8,9 @@ if (js.dom.Selector) {
 		
 		var underEmptyScope = js.dom.Selector.queryAll('div#Test_js-dom', []);
 		equal(underEmptyScope[0], document.getElementById('Test_js-dom'), 'When empty scope array passed in, it should be as document.');
+
+		var classInMultiClass = js.dom.Selector.queryAll('.url');
+		equal(classInMultiClass[0], document.getElementById('Test-js_dom_Selector-multi-class'), 'When select a multi class node by single class, it can be get.');
 	});
 
 	test('js.dom.Selector.match()', function () {
