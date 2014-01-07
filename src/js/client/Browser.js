@@ -83,8 +83,9 @@ js.client.Browser = js.client.Browser || (function (identifier) {
 		browser[version[1]] = parseFloat(version[2]);
 	}
 	//适应Safari
-	if (version[1] == type[3]) {
+	if (version && version[1] == type[3]) {
 		browser[version[1]] = parseFloat(navigator.userAgent.match(/Version\/(\d+(\.\d+)?)/)[1]);
 	}
+	// TODO: for mobile devices
 	return browser;
 })('IE|Firefox|Chrome|Safari|Opera');
