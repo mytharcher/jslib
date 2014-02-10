@@ -20,5 +20,5 @@
  */
 js.dom.Stage.getDocumentElement = function (win) {
 	var doc = js.dom.Stage.getDocument(win);
-	return doc.compatMode == 'BackCompat' ? doc.body : doc.documentElement;
+	return (/webkit/i).test(navigator.userAgent) || doc.compatMode == 'BackCompat' ? doc.body : doc.documentElement;
 };
