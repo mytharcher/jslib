@@ -82,10 +82,7 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 		
 		var option = this.constructor.option;
 
-		var headers = args.headers || {'X-Requested-With': 'XMLHttpRequest'};
-		for (var key in headers) {
-			this.httpRequest.setRequestHeader(key, headers[key]);
-		}
+		this.headers = args.headers || {'X-Requested-With': 'XMLHttpRequest'};
 		
 		js.util.Class.mix(this, args);
 		js.util.Class.mix(this, option);
@@ -147,6 +144,10 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 		}
 		
 		request.open(method, url.toString(), this.async);
+
+		for (var key in this.headers) {
+			this.httpRequest.setRequestHeader(key, this.headers[key]);
+		}
 		
 		data && request.setRequestHeader("Content-type", this.enctype);
 			
