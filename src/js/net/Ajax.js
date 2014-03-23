@@ -18,6 +18,7 @@
 ///import js.util.Class;
 ///import js.util.Global.noop;
 ///import js.client.Features.~json;
+///import js.client.Features.~objectKeys;
 ///import js.net;
 ///import js.net.URL;
 ///import js.net.URLParameter;
@@ -78,6 +79,11 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 */
 	constructor: function (args) {
 		var option = this.constructor.option;
+
+		var headers = args.headers || {'X-Requested-With': 'XMLHttpRequest'};
+		for (var key in headers) {
+			this.httpRequest.setRequestHeader(key, headers[key]);
+		}
 		
 		js.util.Class.mix(this, args);
 		js.util.Class.mix(this, option);
