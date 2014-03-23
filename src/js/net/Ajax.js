@@ -78,6 +78,8 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * @param {Object} args 参数集，默认使用js.net.Ajax.option中的内容
 	 */
 	constructor: function (args) {
+		this.httpRequest = this.constructor.createRequest();
+		
 		var option = this.constructor.option;
 
 		var headers = args.headers || {'X-Requested-With': 'XMLHttpRequest'};
@@ -89,8 +91,6 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 		js.util.Class.mix(this, option);
 		
 		this.method = this.method.toUpperCase();
-		
-		this.httpRequest = this.constructor.createRequest();
 		
 		this._readyStateChangeHander = this.onreadystatechange.bind(this);
 		this.httpRequest.onreadystatechange = this._readyStateChangeHander;
