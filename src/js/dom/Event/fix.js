@@ -20,10 +20,16 @@
  * 
  * @return {Object}
  */
-js.dom.Event.fix = function (ev) {
-	var ev = ev || window.event;
+js.dom.Event.fix = function (e) {
+	var ev = e || window.event;
 
-	ev.target = ev.srcElement = ev.target || ev.srcElement;
+	var target = ev.srcElement || ev.target;
+	if (!ev.target) {
+		ev.target = target;
+	} else {
+		ev.srcElement = target;
+	}
+	
 	ev.keyCode = ev.which || ev.keyCode;
 	ev.rightClick = ev.which == 3 || ev.button == 2;
 	

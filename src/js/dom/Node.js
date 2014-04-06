@@ -89,6 +89,13 @@ js.dom.Node = js.dom.Node || js.util.Class.create({
 		this.toArray().forEach(fn, scope || this);
 		return this;
 	},
+
+	/**
+	 * 函数映射
+	 */
+	map: function (fn, scope) {
+		return this.toArray().map(fn, scope || this);
+	},
 	
 	/**
 	 * 返回选择器过滤后的元素集合

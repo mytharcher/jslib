@@ -18,14 +18,14 @@
 
 /**
  * 转义字符串中的正则相关字符
- * @method escapeReg
+ * @method escapeRegExp
  * @static
  * 
  * @param {String} source 要转义的字符串
  * 
  * @return {String} 转义后的字符串
  */
-js.text.Escaper.escapeReg = js.text.Escaper.escapeReg || function (source) {
+js.text.Escaper.escapeRegExp = js.text.Escaper.escapeRegExp || function (source) {
 	return String(source)
 		.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\\x241');
 };

@@ -90,7 +90,7 @@ js.util.Class.copy({
 			style = js.client.Browser.IE ? elem.currentStyle || elem.style : document.defaultView.getComputedStyle(elem, null);
 		
 		if (key) {
-			value = elem.style[key];
+			value = style[key];
 			
 			// 在取不到值的时候，用fixer进行修正
 			if (!value) {

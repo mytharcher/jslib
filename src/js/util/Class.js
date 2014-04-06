@@ -31,6 +31,7 @@
  */
 
 ///import js.client.Features.~arrayIndexOf;
+///import js.client.Features.~objectKeys;
 ///import js.util;
 
 /**
@@ -106,7 +107,7 @@ js.util.Class = js.util.Class || {
 	 */
 	mix: (function (specialKeys) {
 		function doMix (target, source, key, override, deep, deleteNull) {
-			var over,
+			var over, item,
 				overDef = typeof override != 'undefined',
 				Class = js.util.Class;
 			if (overDef) {
@@ -134,7 +135,7 @@ js.util.Class = js.util.Class || {
 				isFunction = Object.prototype.toString.call(source) == '[object Function]',
 				isObject = source && typeof source == 'object' && !isFunction,
 				isArray = source instanceof Array,
-				keys = [], i, len, item;
+				keys = [], i, len;
 			if (isObject || (isFunction && !deep)) {
 				target = target || (isArray ? [] : {});
 				
@@ -178,7 +179,10 @@ js.util.Class = js.util.Class || {
 		Super && Class.inherit(newClass, Super);
 		
 		//实现接口
-		interfaces && Class.implement(newClass, [].slice.call(arguments, 2));
+		if (interfaces) {
+			var inters = interfaces instanceof Array ? interfaces : [].slice.call(arguments, 2);
+			Class.implement(newClass, inters);
+		}
 		
 		return newClass;
 	},
@@ -219,8 +223,8 @@ js.util.Class = js.util.Class || {
 		//复制超类的静态对象到派生类
 		Class.mix(someClass, Super);
 		
-		//设置派生类的超类属性为超类
-		// someClass.prototype.Super = Super;
+		//设置派生类的超类属性为超类的原型
+		someClass.__super__ = Super.prototype;
 		
 		//修复派生类的构造函数属性
 		someClass.prototype.constructor = someClass;
@@ -232,7 +236,7 @@ js.util.Class = js.util.Class || {
 	 * 实现接口
 	 * @method js.util.Class.implement
 	 * @static
-	 * 该方法会将inter对象上的所有函数扩展到someClass的原型上，前提是someClass的原型上没有同名的方法。
+	 * 该方法会将inter对象上的所有函数扩展到someClass的原型上，前提是someClass自己的原型上没有同名的方法。
 	 * 通过此方法以达到在创建类时可以实现其他类提供的接口。
 	 * 
 	 * @param {Function} someClass
@@ -252,7 +256,7 @@ js.util.Class = js.util.Class || {
 						if (p != 'constructor' &&
 							p != 'prototype' &&
 							obj2str.call(protoItem) == '[object Function]' &&
-							!someClass.prototype[p]
+							!someClass.prototype.hasOwnProperty(p)
 						) {
 							someClass.prototype[p] = protoItem;
 						}

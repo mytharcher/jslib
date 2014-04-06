@@ -48,7 +48,7 @@ js.util.Hash = js.util.Class.create({
 	 * @return {Hash} 返回当前实例以继续操作
 	 */
 	_update: function (type, key, value) {
-		if (typeof key != 'undefined') {
+		if (typeof key != 'undefined' && key !== null) {
 			var methodMap = this.constructor._updataMethod;
 			var map = this._data;
 			if (typeof value == 'undefined') {
@@ -67,7 +67,7 @@ js.util.Hash = js.util.Class.create({
 						methodMap[type].updateValue.call(this, i, json[i]);
 					}
 				}
-			} else if (typeof key == 'string' && key != '') {
+			} else if (typeof key == 'string' && key) {
 				methodMap[type].updateValue.call(this, key, value);
 			}
 		}

@@ -81,5 +81,27 @@ js.dom.BoxModel = {
 				return false;
 			}
 		});
+	},
+	
+	/**
+	 * 判断一个元素是否在窗口可视区域内
+	 * @method js.dom.BoxModel.isViewable
+	 * @static
+	 * 
+	 * @param  {Element} element 要判断的元素
+	 * @return {Boolean}
+	 */
+	isViewable: function (element) {
+		var pos = element.getBoundingClientRect();
+		var doc = js.dom.Stage.getDocumentElement();
+		var winHeight = doc.clientHeight;
+		var winWidth = doc.clientWidth;
+		var scrollLeft = document.body.scrollLeft || doc.scrollLeft;
+		var scrollTop = document.body.scrollTop || doc.scrollTop;
+		
+		return (pos.right > 0 &&
+			pos.left < winWidth &&
+			pos.bottom > 0 &&
+			pos.top < winHeight);
 	}
 };

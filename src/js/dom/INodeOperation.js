@@ -31,30 +31,32 @@ js.dom.INodeOperation = js.dom.INodeOperation || js.util.Class.mix({
 	 * @return {Node} 返回自身以供链式调用
 	 */
 	insert: function(node, position){
-		var Type = js.util.Type;
-		var nodes = new this.constructor(node);
-		var pos;
-		switch (Type.of(position)) {
-			case Type.ELEMENT:
-			case Type.UNDEFINED:
-				pos = position;
-				break;
-			case Type.NUMBER:
-				pos = js.dom.Relation.children(this[0])[position];
-				break;
-			case Type.STRING:
-			case Type.OBJECT:
-			case Type.ARRAY:
-				pos = (new this.constructor(position))[0];
-				break;
-			default:
-				break;
+		if (this.length) {
+			var Type = js.util.Type;
+			var nodes = new this.constructor(node);
+			var pos;
+			switch (Type.of(position)) {
+				case Type.ELEMENT:
+				case Type.UNDEFINED:
+					pos = position;
+					break;
+				case Type.NUMBER:
+					pos = js.dom.Relation.children(this[0])[position];
+					break;
+				case Type.STRING:
+				case Type.OBJECT:
+				case Type.ARRAY:
+					pos = (new this.constructor(position))[0];
+					break;
+				default:
+					break;
+			}
+			var frag = document.createDocumentFragment();
+			for (var i = 0, len = nodes.length; i < len; i++) {
+				frag.appendChild(nodes[i]);
+			}
+			this[0].insertBefore(frag, pos);
 		}
-		var frag = document.createDocumentFragment();
-		for (var i = 0, len = nodes.length; i < len; i++) {
-			frag.appendChild(nodes[i]);
-		}
-		this[0].insertBefore(frag, pos);
 		
 		return this;
 	},
@@ -104,12 +106,18 @@ js.dom.INodeOperation = js.dom.INodeOperation || js.util.Class.mix({
 //	},
 //	
 	html: function (html, callback) {
-		var ret = js.dom.Operation.html(this[0], html, callback);
+		var ret = null;
+		if (this.length) {
+			ret = js.dom.Operation.html(this[0], html, callback);
+		}
 		return js.util.Type.isDefined(html) ? this : ret;
 	},
 	
 	text: function (text) {
-		var ret = js.dom.Operation.text(this[0], text);
+		var ret = null;
+		if (this.length) {
+			ret = js.dom.Operation.text(this[0], text);
+		}
 		return js.util.Type.isDefined(text) ? this : ret;
 	}
 }, js.dom.NodeInterfaceFactory.create({

@@ -41,7 +41,9 @@ js.dom.NodeInterfaceFactory = js.dom.NodeInterfaceFactory || js.util.Class.mix({
 	template: function(base, method, key){
 		//判断是否是get类只针对一个元素操作的方法
 		return key.custom || (key.single ? function(){
-			return base[method].apply(base, [this[0]].concat([].slice.call(arguments, 0)));
+			return this.length ?
+				base[method].apply(base, [this[0]].concat([].slice.call(arguments, 0)))
+				: null;
 		} : function(){
 			var args = [].slice.call(arguments, 0);
 			this.forEach(function(element){

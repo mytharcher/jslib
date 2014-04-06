@@ -18,6 +18,7 @@
 ///import js.util.Class;
 ///import js.util.Global.noop;
 ///import js.client.Features.~json;
+///import js.client.Features.~objectKeys;
 ///import js.net;
 ///import js.net.URL;
 ///import js.net.URLParameter;
@@ -42,16 +43,16 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * @cfg {Boolean} blockDuplicate 是否阻止同一个实例上重复的请求，默认：false
 	 */
 	/**
-	 * @cfg {String} contentType 发送内容类型，默认：'application/x-www-form-urlencoded'
-	 */
-	/**
-	 * @cfg {String} encoding 发送编码，默认：'utf-8'
+	 * @cfg {String} enctype 发送内容类型，默认：'application/x-www-form-urlencoded'
 	 */
 	/**
 	 * @cfg {String} responseType 返回数据类型，默认：'text'(纯文本)
 	 */
 	/**
 	 * @cfg {Function} encoder 发送数据的编码函数，默认无
+	 */
+	/**
+	 * @cfg {Boolean} pureText 是否要发送纯文本，默认否，仅在POST是可用
 	 */
 	/**
 	 * @cfg {Function} onsuccess 当使用默认onreadystatechange事件(readyState==4&&200<=status<300)加载成功时的处理，下同
@@ -77,14 +78,16 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * @param {Object} args 参数集，默认使用js.net.Ajax.option中的内容
 	 */
 	constructor: function (args) {
+		this.httpRequest = this.constructor.createRequest();
+		
 		var option = this.constructor.option;
+
+		this.headers = args.headers || {'X-Requested-With': 'XMLHttpRequest'};
 		
 		js.util.Class.mix(this, args);
 		js.util.Class.mix(this, option);
 		
 		this.method = this.method.toUpperCase();
-		
-		this.httpRequest = this.constructor.createRequest();
 		
 		this._readyStateChangeHander = this.onreadystatechange.bind(this);
 		this.httpRequest.onreadystatechange = this._readyStateChangeHander;
@@ -100,9 +103,10 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	
 	/**
 	 * 发送请求
-	 * @param {Object/URLParameter} 加载时的参数
+	 * @param {String} 请求方法
+	 * @param {Object/URLParameter/String} 加载时的参数
 	 */
-	request: function (data) {
+	request: function (method, data) {
 		var myClass = this.constructor;
 		
 		var request = this.httpRequest;
@@ -115,24 +119,38 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 			}
 		}
 		
-		var url = new js.net.URL(this.url);
+		if (arguments.length <= 1) {
+			data = method;
+			method = this.method;
+		}
 		
-		var data = new js.net.URLParameter(data);
+		var url = new js.net.URL(this.url);
 		
 		if (this.noCache) {
 			url.setParameter('@', (new Date()).valueOf());
 		}
 		
-		if (this.method == myClass.HTTP_GET) {
-			url.setParameter(data.get());
-			data = null;
+		if (!this.pureText) {
+			data = new js.net.URLParameter(data);
+		
+			if (method == myClass.HTTP_GET) {
+				url.setParameter(data.get());
+				data = null;
+			} else {
+				data = data.toString(this.encoder);
+			}
 		} else {
-			data = data.toString(this.encoder);
+			this.enctype = myClass.ENCTYPE_PLAIN;
 		}
 		
-		request.open(this.method, url.toString(), this.async);
+		request.open(method, url.toString(), this.async);
+
+		// All headers setting should put after request.open()
+		for (var key in this.headers) {
+			this.httpRequest.setRequestHeader(key, this.headers[key]);
+		}
 		
-		data && request.setRequestHeader("Content-type", this.contentType);
+		data && request.setRequestHeader("Content-type", this.enctype);
 			
 		request.send(data);
 	},
@@ -142,7 +160,7 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 	 * @method abort
 	 */
 	abort: function () {
-		var request = this.httpRequest
+		var request = this.httpRequest;
 		if (request.readyState != this.constructor.STATE_COMPLETE) {
 			request.abort();
 			request.onreadystatechange = this._readyStateChangeHander;
@@ -219,6 +237,22 @@ js.util.Class.copy({
 	 * @type {String}
 	 */
 	DATA_TYPE_XML: 'xml',
+	
+	/**
+	 * 编码方式：纯文本
+	 * @constant
+	 * @property ENCTYPE_PLAIN
+	 * @type {String}
+	 */
+	ENCTYPE_PLAIN: 'text/plain',
+	
+	/**
+	 * 编码方式：form-urlencoded
+	 * @constant
+	 * @property ENCTYPE_FORM_URLENCODED
+	 * @type {String}
+	 */
+	ENCTYPE_FORM_URLENCODED: 'application/x-www-form-urlencoded',
 	
 	/**
 	 * 创建异步请求对象
@@ -298,10 +332,10 @@ js.net.Ajax.option = {
 	async: true,
 	noCache: false,
 	blockDuplicate: false,
-	contentType: 'application/x-www-form-urlencoded',
-	encoding: 'utf-8',
+	enctype: js.net.Ajax.ENCTYPE_FORM_URLENCODED,
 	responseType: js.net.Ajax.DATA_TYPE_TEXT,
 	encoder: encodeURIComponent,
+	pureText: false,
 	
 	onsuccess: js.util.Global.noop,
 	onfailure: js.util.Global.noop,
@@ -319,16 +353,16 @@ js.net.Ajax.option = {
 				if (me.onsuccess) {
 					var response = request.responseText;
 					switch (me.responseType) {
-						case myClass.DATA_TYPE_JSON:
-							response = JSON.parse(response);
-							break;
-							
-						case myClass.DATA_TYPE_XML:
-							response = request.responseXML;
-							break;
-							
-						default:
-							break;
+					case myClass.DATA_TYPE_JSON:
+						response = JSON.parse(response);
+						break;
+						
+					case myClass.DATA_TYPE_XML:
+						response = request.responseXML;
+						break;
+						
+					default:
+						break;
 					}
 					me.onsuccess(response, request);
 				}
