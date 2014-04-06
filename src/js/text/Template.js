@@ -117,7 +117,7 @@ js.text.Template = js.text.Template || {
 	 */
 	delimiter: function (left, right) {
 		var Template = js.text.Template,
-			escapeReg = js.text.Escaper.escapeReg;
-		Template._re = new RegExp(escapeReg(left || Template.LEFT_DELIMITER) + '(\\w+)' + escapeReg(right || Template.RIGHT_DELIMITER), 'ig');
+			escapeReg = js.text.Escaper.escapeRegExp;
+		Template._re = new RegExp(escapeRegExp(left || Template.LEFT_DELIMITER) + '(\\w+)' + escapeRegExp(right || Template.RIGHT_DELIMITER), 'ig');
 	}
 };
