@@ -11,7 +11,7 @@
  */
 
 ///import js.text;
-///import js.text.Escaper.escapeReg;
+///import js.text.Escaper.escapeRegExp;
 
 /**
  * @class js.text.Template 文本拼串模板类

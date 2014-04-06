@@ -1,6 +1,6 @@
 ///import js.client.Browser;
 ///import js.util.XArray;
-///import js.text.Encoder.encodeHTML;
+///import js.text.Escaper.escapeHTML;
 ///import js.dom;
 
 /**
@@ -72,7 +72,7 @@ js.dom.Flash = {
 		var version = js.dom.Flash.version, 
 			needVersion = options.ver || '6.0.0', 
 			vUnit1, vUnit2, i, k, len, item, tmpOpt = {},
-			encodeHTML = js.text.Encoder.encodeHTML;
+			escapeHTML = js.text.Escaper.escapeHTML;
 		
 		// 复制options，避免修改原对象
 		for (k in options) {
@@ -124,7 +124,7 @@ js.dom.Flash = {
 		var str = ['<object '];
 		for (i = 0, len = objProperties.length; i < len; i++) {
 			item = objProperties[i];
-			str.push(' ', item, '="', encodeHTML(options[item]), '"');
+			str.push(' ', item, '="', escapeHTML(options[item]), '"');
 		}
 		str.push('>');
 		var params = {
@@ -151,7 +151,7 @@ js.dom.Flash = {
 			item = options[k];
 			k = k.toLowerCase();
 			if (params[k] && (item || item === false || item === 0)) {
-				str.push('<param name="' + k + '" value="' + encodeHTML(item) + '" />');
+				str.push('<param name="' + k + '" value="' + escapeHTML(item) + '" />');
 			}
 		}
 		
@@ -179,12 +179,12 @@ js.dom.Flash = {
 					continue;
 				}
 				
-				str.push(' ', k, '="', encodeHTML(item), '"');
+				str.push(' ', k, '="', escapeHTML(item), '"');
 			}
 		}
 		
 		if (salign) {
-			str.push(' salign="', encodeHTML(salign), '"');
+			str.push(' salign="', escapeHTML(salign), '"');
 		}
 		str.push('></embed></object>');
 		
