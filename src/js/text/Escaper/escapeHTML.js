@@ -8,22 +8,22 @@
  * 
  */
 
-///import js.text.Encoder;
+///import js.text.Escaper;
 
 /**
- * @class js.text.Encoder
+ * @class js.text.Escaper
  */
 
 /**
  * 编码HTML敏感字符
- * @method js.text.Encoder.encodeHTML
+ * @method js.text.Escaper.escapeHTML
  * @static
  * 
  * @param {String} str
  * 
  * @return {String}
  */
-js.text.Encoder.encodeHTML = function (str) {
+js.text.Escaper.escapeHTML = function (str) {
 	return str.replace(/([&<>'"])/g, function (matcher, symbol) {
 		return '&#' + symbol.charCodeAt(0) + ';';
 	});
