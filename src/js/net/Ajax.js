@@ -145,6 +145,7 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 		
 		request.open(method, url.toString(), this.async);
 
+		// All headers setting should put after request.open()
 		for (var key in this.headers) {
 			this.httpRequest.setRequestHeader(key, this.headers[key]);
 		}
