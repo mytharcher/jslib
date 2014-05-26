@@ -32,7 +32,8 @@ js.dom.BoxModel = {
 		
 		var cStyle = el.currentStyle || document.defaultView.getComputedStyle(el, null);
 		
-		//	var layoutBWX = layoutBWY = 0;
+		// var layoutBWX = 0, layoutBWY = 0;
+		var isWebkit = navigator.userAgent.match(/Chrome|Safari/);
 		
 		if (!refer) {
 			if (cStyle.position == 'absolute') {
@@ -46,10 +47,15 @@ js.dom.BoxModel = {
 			for (var node = el; node.offsetParent && node != refer; node = node.offsetParent) {
 				pos.x += node.offsetLeft;
 				pos.y += node.offsetTop;
-	//			if (e.currentStyle && e.currentStyle.hasLayout) {
-	//				layoutBWX += (parseInt(e.currentStyle.borderLeftWidth) || 0);
-	//				layoutBWY += (parseInt(e.currentStyle.borderTopWidth) || 0);
-	//			}
+
+				// bug when border-box under Chrome 34 (also in webkit)
+				if (isWebkit) {
+					var pStyle = document.defaultView.getComputedStyle(node.offsetParent, null);
+					if (pStyle['box-sizing'] == 'border-box') {
+						pos.x += (parseInt(pStyle.borderLeftWidth, 10) || 0);
+						pos.y += (parseInt(pStyle.borderTopWidth, 10) || 0);
+					}
+				}
 			}
 			//避免ie和ff计算body的offsetLeft不一致
 	//		pos.x = el.offsetLeft - node.offsetLeft;//-(parseInt(cStyle.marginLeft)||0);
