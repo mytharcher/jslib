@@ -150,13 +150,14 @@ js.util.Processor.parallel(fn1, fn2, callback);
 		}
 		
 		function process (item, index) {
+			function done() {
+				item.count++;
+				callback(item);
+			}
 			if (!item.running) {
 				item.running = true;
 				for (var i = 0, len = item.fn.length; i < len; i++) {
-					item.fn[i](function () {
-						item.count++;
-						callback(item);
-					});
+					item.fn[i](done);
 				}
 			}
 		}
@@ -174,13 +175,13 @@ js.util.Processor.parallel(fn1, fn2, callback);
 			queue.push({
 				fn: fns,
 				callback: cb,
-				conut: 0
+				count: 0
 			});
 			
 			start();
 			
 			return arguments.callee;
-		}
+		};
 	})(),
 	
 	mix: function (map, callback) {
