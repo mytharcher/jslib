@@ -60,12 +60,12 @@ js.util.Processor = {
 	 * 
 	 * @example <pre><code>
 var data = 0;
-function fn1(next){
-	ajax(options, function () {data += 100; next();});
+function fn1(){
+	ajax(options, function () {data += 100; this.next();});
 }
-function fn2(next){
+function fn2(){
 	data *= 2;
-	setTimeout(next, 2000);
+	setTimeout(this.next, 2000);
 }
 function callback(){
 	console.log(data); // 200
@@ -89,7 +89,7 @@ asyncQueue(fn1, fn2, fn3);
 				if (queue.items.length) {
 					queue.running = true;
 
-					queue.items.shift().fn();
+					queue.items.shift()(queue.next);
 				} else {
 					group.splice(index, 1);
 
@@ -99,22 +99,27 @@ asyncQueue(fn1, fn2, fn3);
 		}
 
 		return function () {
-			var fns = [].slice.call(arguments);
 			var queue = {
+				items: [].slice.call(arguments),
 				running: false
 			};
 
-			function next () {
+			queue.next = function () {
 				queue.running = false;
 				run();
-			}
+			};
 
-			queue.items = fns.map(function (item, index, array) {
-				return {
-					fn: item,
-					next: next
-				};
-			});
+			queue.next.stop = function () {
+				for (var i = group.length - 1; i >= 0; i--) {
+					if (group[i] == queue) {
+						group.splice(i, 1);
+						queue.next.stop = null;
+						queue.next = null;
+						queue = null;
+						break;
+					}
+				}
+			};
 
 			group.unshift(queue);
 
