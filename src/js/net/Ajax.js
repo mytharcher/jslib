@@ -130,17 +130,30 @@ js.net.Ajax = js.net.Ajax || js.util.Class.create({
 			url.setParameter('@', (new Date()).valueOf());
 		}
 		
-		if (!this.pureText) {
-			data = new js.net.URLParameter(data);
-		
-			if (method == myClass.HTTP_GET) {
-				url.setParameter(data.get());
-				data = null;
-			} else {
-				data = data.toString(this.encoder);
-			}
-		} else {
-			this.enctype = myClass.ENCTYPE_PLAIN;
+		switch(this.enctype) {
+			case myClass.ENCTYPE_JSON:
+			case myClass.ENCTYPE_PLAIN:
+				if (data) {
+					method = myClass.HTTP_POST;
+					if (!js.util.Type.isString(data)) {
+						data = JSON.stringify(data);
+					}
+				}
+				break;
+
+			default:
+				this.enctype = myClass.ENCTYPE_FORM_URLENCODED;
+
+				data = new js.net.URLParameter(data);
+			
+				if (method == myClass.HTTP_GET) {
+					url.setParameter(data.get());
+					data = null;
+				} else {
+					data = data.toString(this.encoder);
+				}
+
+				break;
 		}
 		
 		request.open(method, url.toString(), this.async);
@@ -239,6 +252,14 @@ js.util.Class.copy({
 	DATA_TYPE_XML: 'xml',
 	
 	/**
+	 * 编码方式：JSON
+	 * @constant
+	 * @property ENCTYPE_JSON
+	 * @type {String}
+	 */
+	ENCTYPE_JSON: 'application/json',
+	
+	/**
 	 * 编码方式：纯文本
 	 * @constant
 	 * @property ENCTYPE_PLAIN
@@ -335,7 +356,6 @@ js.net.Ajax.option = {
 	enctype: js.net.Ajax.ENCTYPE_FORM_URLENCODED,
 	responseType: js.net.Ajax.DATA_TYPE_TEXT,
 	encoder: encodeURIComponent,
-	pureText: false,
 	
 	onsuccess: js.util.Global.noop,
 	onfailure: js.util.Global.noop,
