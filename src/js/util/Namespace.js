@@ -61,7 +61,7 @@ js.util.Namespace = js.util.Namespace || {
 				nsStr = nsStr.split('.');
 				for (var i = 0, l = nsStr.length; i < l; i++) {
 					var word = nsStr[i];
-					if (!ns[word]) {
+					if (typeof ns[word] == 'undefined') {
 						if (isCreate) {
 							ns[word] = i < l - 1 ? {} : object;
 						} else {
