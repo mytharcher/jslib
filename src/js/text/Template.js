@@ -74,12 +74,12 @@ js.text.Template = js.text.Template || {
 		if (!Template._re) {
 			Template.delimiter();
 		}
-		var fnBody = [
-			'var args = args && typeof args == "object" ? args : [].slice.call(arguments, 0);',
-			'return ["',
-			tpl.replace(/(["'])/g, '\\\x241').replace(Template._re, '", args["\x241"], "'),
-			'"].join("");'
-		].join('');
+		var fnBody = 'var args = args && typeof args == "object" ? args : [].slice.call(arguments, 0);' +
+			'return ["' +
+			tpl.replace(/(["'])/g, '\\\x241')
+				.replace(/\n/g, '')
+				.replace(Template._re, '", args["\x241".trim()], "') +
+			'"].join("");';
 		
 		return new Function('args', fnBody);
 	},
@@ -118,6 +118,6 @@ js.text.Template = js.text.Template || {
 	delimiter: function (left, right) {
 		var Template = js.text.Template,
 			escapeRegExp = js.text.Escaper.escapeRegExp;
-		Template._re = new RegExp(escapeRegExp(left || Template.LEFT_DELIMITER) + '(\\w+)' + escapeRegExp(right || Template.RIGHT_DELIMITER), 'ig');
+		Template._re = new RegExp(escapeRegExp(left || Template.LEFT_DELIMITER) + '(\\s*\\w+\\s*)' + escapeRegExp(right || Template.RIGHT_DELIMITER), 'ig');
 	}
 };

@@ -30,9 +30,9 @@ js.dom.Attribute = js.dom.Attribute || {
 	 */
 	get: function (element, key) {
 		var element = js.dom.Stage.get(element);
-	    if ('style' == key){
-	        return element.style.cssText;
-	    }
+		if ('style' == key){
+			return element.style.cssText;
+		}
 		return element.getAttribute(js.dom.Attribute.keyEscape[key] || key);
 	},
 	
@@ -46,7 +46,7 @@ js.dom.Attribute = js.dom.Attribute || {
 	 * @param {String} value
 	 */
 	set: function (element, key, value) {
-		var element = js.dom.Stage.get(element);
+		element = js.dom.Stage.get(element);
 		if (typeof key == 'object' && typeof value == 'undefined') {
 			for (var i in key) {
 				js.dom.Attribute.set(element, i, key[i]);
@@ -54,6 +54,19 @@ js.dom.Attribute = js.dom.Attribute || {
 		} else {
 			element.setAttribute(js.dom.Attribute.keyEscape[key] || key, value);
 		}
+	},
+
+	/**
+	 * 移除元素的属性
+	 * @method js.dom.Attribute.remove
+	 * @static
+	 * 
+	 * @param {Element/String} element 要移除属性的元素
+	 * @param {String/Object} key
+	 */
+	remove: function (element, key) {
+		element = js.dom.Stage.get(element);
+		element.removeAttribute(key);
 	},
 	
 	/**
@@ -63,24 +76,24 @@ js.dom.Attribute = js.dom.Attribute || {
 	 * from https://github.com/BaiduFE/Tangram-base/blob/master/src/baidu/dom/_NAME_ATTRS.js
 	 */
 	keyEscape: (function () {
-	    var result = {
-	        'cellpadding': 'cellPadding',
-	        'cellspacing': 'cellSpacing',
-	        'colspan': 'colSpan',
-	        'rowspan': 'rowSpan',
-	        'valign': 'vAlign',
-	        'usemap': 'useMap',
-	        'frameborder': 'frameBorder'
-	    };
-	    
-	    if (js.client.Browser.IE < 8) {
-	        result['for'] = 'htmlFor';
-	        result['class'] = 'className';
-	    } else {
-	        result['htmlFor'] = 'for';
-	        result['className'] = 'class';
-	    }
-	    
-	    return result;
+		var result = {
+			'cellpadding': 'cellPadding',
+			'cellspacing': 'cellSpacing',
+			'colspan': 'colSpan',
+			'rowspan': 'rowSpan',
+			'valign': 'vAlign',
+			'usemap': 'useMap',
+			'frameborder': 'frameBorder'
+		};
+		
+		if (js.client.Browser.IE < 8) {
+			result['for'] = 'htmlFor';
+			result['class'] = 'className';
+		} else {
+			result.htmlFor = 'for';
+			result.className = 'class';
+		}
+		
+		return result;
 	})()
 };

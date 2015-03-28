@@ -79,6 +79,7 @@ asyncQueue(fn1, fn2, fn3);
 		var group = [];
 
 		function run() {
+			// Loop from last to first, can't use forEach().
 			for (var i = group.length - 1; i >= 0; i--) {
 				process(group[i], i, group);
 			}
@@ -89,7 +90,7 @@ asyncQueue(fn1, fn2, fn3);
 				if (queue.items.length) {
 					queue.running = true;
 
-					queue.items.shift()(queue.next);
+					queue.items.shift().call(queue.locals, queue.next);
 				} else {
 					group.splice(index, 1);
 
@@ -100,13 +101,13 @@ asyncQueue(fn1, fn2, fn3);
 
 		return function () {
 			var queue = {
+				locals: {},
 				items: [].slice.call(arguments),
-				running: false
-			};
-
-			queue.next = function () {
-				queue.running = false;
-				run();
+				running: false,
+				next: function () {
+					queue.running = false;
+					run();
+				}
 			};
 
 			queue.next.stop = function () {
@@ -162,7 +163,7 @@ js.util.Processor.parallel(fn1, fn2, callback);
 			if (!item.running) {
 				item.running = true;
 				for (var i = 0, len = item.fn.length; i < len; i++) {
-					item.fn[i](done);
+					item.fn[i].call(item.locals, done);
 				}
 			}
 		}
@@ -170,7 +171,7 @@ js.util.Processor.parallel(fn1, fn2, callback);
 		function callback (group) {
 			if (group.fn.length == group.count) {
 				queue.splice(queue.indexOf(group), 1);
-				group.callback();
+				group.callback.call(group.locals);
 			}
 		}
 		
@@ -178,6 +179,7 @@ js.util.Processor.parallel(fn1, fn2, callback);
 			var fns = [].slice.call(arguments, 0);
 			var cb = fns.pop();
 			queue.push({
+				locals: {},
 				fn: fns,
 				callback: cb,
 				count: 0

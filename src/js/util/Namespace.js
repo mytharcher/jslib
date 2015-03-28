@@ -58,10 +58,10 @@ js.util.Namespace = js.util.Namespace || {
 					break;
 			}
 			if (ns) {
-				var nsStr = nsStr.split('.');
+				nsStr = nsStr.split('.');
 				for (var i = 0, l = nsStr.length; i < l; i++) {
 					var word = nsStr[i];
-					if (!ns[word]) {
+					if (typeof ns[word] == 'undefined') {
 						if (isCreate) {
 							ns[word] = i < l - 1 ? {} : object;
 						} else {
@@ -95,7 +95,7 @@ js.util.Namespace = js.util.Namespace || {
 	 * @return {void}
 	 */
 	use: function (ns, target, alias) {
-		var target = target || js.util.Global.getGlobal();
+		target = target || js.util.Global.getGlobal();
 		var className = ns.match(/(?:^|\.)([\w\$]+|\*)$/)[1];
 		var Namespace = js.util.Namespace;
 		
