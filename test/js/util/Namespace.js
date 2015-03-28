@@ -13,6 +13,9 @@ if (js.util.Namespace) {
 		
 		equals(js.util.Namespace.get('ABCD'), js.util.Global.noop(), 'To get a namespace not exist by specifying a namespace string, it will return undefined.');
 		
+		equals(js.util.Namespace.get('zero', {zero: 0}), 0, 'Number value "0" Could be get.');
+		equals(js.util.Namespace.get('False', {False: false}), false, 'Boolean value "false" Could be get.');
+		
 		var myNamespaceObj = {
 			n: 1
 		};
